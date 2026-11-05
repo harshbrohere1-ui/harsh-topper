@@ -1,0 +1,2896 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mission Topper: Zero to 70/70 Study OS</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              math: '#818cf8', // Indigo / Violet
+              mathGlow: '#4f46e5',
+              physics: '#38bdf8', // Cyan / Sky
+              physicsGlow: '#0284c7',
+              chem: '#34d399', // Emerald
+              chemGlow: '#059669',
+              work: '#fbbf24', // Amber
+              workGlow: '#d97706',
+              test: '#fb7185', // Rose
+              testGlow: '#e11d48'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(39, 39, 42, 0.8);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.15);
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+    input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: #6366f1;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white pb-20">
+
+  <!-- TOP STATUS BANNER & HEADER -->
+  <header class="border-b border-zinc-800/80 bg-slate-950/90 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Mission Info -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-sky-500 to-emerald-400 p-0.5 shadow-lg shadow-indigo-500/20 flex items-center justify-center">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+            <span class="text-xl">🎯</span>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-white via-indigo-100 to-sky-300 bg-clip-text text-transparent">
+              MISSION TOPPER
+            </h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold tracking-wider uppercase">
+              Class 11 PCM
+            </span>
+          </div>
+          <p class="text-xs text-zinc-400 flex items-center gap-1.5 font-medium">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-emerald-400 font-semibold">HIGH-DISCIPLINE MODE</span>
+            <span class="text-zinc-600">•</span>
+            <span id="current-time-display" class="font-mono text-zinc-400">Loading...</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="openPomodoroModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-semibold flex items-center gap-1.5 transition">
+          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="hidden sm:inline">Pomodoro</span>
+          <span id="header-pomo-badge" class="font-mono font-bold text-indigo-200 ml-1">45:00</span>
+        </button>
+
+        <button onclick="testAudioChime()" title="Test Sound Chime" class="p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 text-xs transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+        </button>
+
+        <button onclick="exportDataBackup()" title="Backup Study OS Data" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 text-xs font-medium flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span class="hidden md:inline">Backup</span>
+        </button>
+
+        <button onclick="triggerImportPrompt()" title="Restore Data" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 text-xs font-medium flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span class="hidden md:inline">Restore</span>
+        </button>
+        <input type="file" id="import-file-input" class="hidden" accept=".json" onchange="handleFileImport(event)">
+
+        <button onclick="resetDayChecklist()" title="Reset Today's Routine & Habits" class="px-2.5 py-1.5 rounded-lg bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 border border-rose-800/40 text-xs font-semibold flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden lg:inline">New Day</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-7">
+
+    <!-- 1. DYNAMIC COUNTDOWN CARDS -->
+    <section>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <!-- PT-2 Countdown -->
+        <div class="glass-card rounded-2xl p-4 relative overflow-hidden border-indigo-500/30">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold tracking-wider text-indigo-400 uppercase">PT-2 Exam Sprint</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">Nov 25, 2026</span>
+          </div>
+          <div class="mt-2.5 flex items-baseline gap-2">
+            <span id="countdown-pt2-days" class="text-3xl font-extrabold font-mono text-white tracking-tight">--</span>
+            <span class="text-xs text-zinc-400 font-medium">Days remaining</span>
+          </div>
+          <div class="mt-2 text-[11px] text-zinc-400 flex items-center justify-between">
+            <span>Targets: Solids, Fluids, Thermo, Straight Lines</span>
+            <span id="pt2-time-detail" class="font-mono text-indigo-300">--h</span>
+          </div>
+          <div class="w-full bg-zinc-800/80 rounded-full h-1.5 mt-2.5 overflow-hidden">
+            <div id="countdown-pt2-bar" class="bg-gradient-to-r from-indigo-500 to-sky-400 h-1.5 rounded-full transition-all duration-700" style="width: 35%"></div>
+          </div>
+        </div>
+
+        <!-- Gaon Trip Countdown -->
+        <div class="glass-card rounded-2xl p-4 relative overflow-hidden border-amber-500/30">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold tracking-wider text-amber-400 uppercase">Gaon Trip Departure</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">Dec 02, 2026</span>
+          </div>
+          <div class="mt-2.5 flex items-baseline gap-2">
+            <span id="countdown-gaon-days" class="text-3xl font-extrabold font-mono text-white tracking-tight">--</span>
+            <span class="text-xs text-zinc-400 font-medium">Days remaining</span>
+          </div>
+          <div class="mt-2 text-[11px] text-zinc-400 flex items-center justify-between">
+            <span>Prepare Formula Pocketbook & Offline NCERT</span>
+            <span id="gaon-time-detail" class="font-mono text-amber-300">--h</span>
+          </div>
+          <div class="w-full bg-zinc-800/80 rounded-full h-1.5 mt-2.5 overflow-hidden">
+            <div id="countdown-gaon-bar" class="bg-gradient-to-r from-amber-500 to-rose-400 h-1.5 rounded-full transition-all duration-700" style="width: 25%"></div>
+          </div>
+        </div>
+
+        <!-- Annual Final Exam Countdown -->
+        <div class="glass-card rounded-2xl p-4 relative overflow-hidden border-emerald-500/30">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold tracking-wider text-emerald-400 uppercase">70/70 Annual Finals</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">Feb 15, 2027</span>
+          </div>
+          <div class="mt-2.5 flex items-baseline gap-2">
+            <span id="countdown-annual-days" class="text-3xl font-extrabold font-mono text-white tracking-tight">--</span>
+            <span class="text-xs text-zinc-400 font-medium">Days remaining</span>
+          </div>
+          <div class="mt-2 text-[11px] text-zinc-400 flex items-center justify-between">
+            <span>Mission: 100% NCERT Mastery + All Derivations</span>
+            <span id="annual-time-detail" class="font-mono text-emerald-300">--h</span>
+          </div>
+          <div class="w-full bg-zinc-800/80 rounded-full h-1.5 mt-2.5 overflow-hidden">
+            <div id="countdown-annual-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-1.5 rounded-full transition-all duration-700" style="width: 15%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. TOP METRICS & PROGRESS DASHBOARD -->
+    <section class="glass-card rounded-2xl p-5 border-zinc-800/90">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-5 items-center">
+        
+        <!-- Metric 1: Overall Syllabus Completion -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-semibold text-zinc-300">Overall Class 11 PCM Syllabus</span>
+            <span id="overall-percentage" class="font-mono font-bold text-indigo-400">0%</span>
+          </div>
+          <div class="w-full bg-zinc-800 rounded-full h-3 overflow-hidden p-0.5 border border-zinc-700/50">
+            <div id="overall-progress-bar" class="bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="text-[11px] text-zinc-400 flex justify-between">
+            <span id="overall-checklist-count">0 / 0 tasks completed</span>
+            <span class="text-indigo-300 font-medium">Target: 70/70 Turnaround</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Active Phase Completion -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-semibold text-zinc-300"><span id="active-phase-label">Phase 1</span> Sprint</span>
+            <span id="phase-percentage" class="font-mono font-bold text-sky-400">0%</span>
+          </div>
+          <div class="w-full bg-zinc-800 rounded-full h-3 overflow-hidden p-0.5 border border-zinc-700/50">
+            <div id="phase-progress-bar" class="bg-gradient-to-r from-sky-500 to-indigo-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="text-[11px] text-zinc-400 flex justify-between">
+            <span id="phase-checklist-count">0 / 0 sprint tasks</span>
+            <span class="text-sky-300 font-medium">Deadline Locked</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Today's Routine & Habits Target Ring -->
+        <div class="flex items-center gap-3.5 bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/80">
+          <div class="relative w-14 h-14 flex-shrink-0 flex items-center justify-center">
+            <svg class="w-14 h-14 transform -rotate-90" viewBox="0 0 36 36">
+              <path class="text-zinc-800" stroke-width="3.5" stroke="currentColor" fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="daily-target-ring" class="text-emerald-400 transition-all duration-700 stroke-current" stroke-width="3.5" stroke-dasharray="100, 100" stroke-dashoffset="100" stroke-linecap="round" fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <span id="daily-target-ring-text" class="absolute text-xs font-mono font-extrabold text-white">0%</span>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-zinc-200">Daily Execution Ring</div>
+            <div id="daily-target-subtext" class="text-[11px] text-zinc-400 mt-0.5">0 of 11 items finished</div>
+            <div class="text-[10px] text-emerald-400 font-semibold mt-0.5">Non-negotiable day score</div>
+          </div>
+        </div>
+
+        <!-- Metric 4: Daily Focus Streak Counter -->
+        <div class="flex items-center gap-3.5 bg-zinc-900/60 p-3 rounded-xl border border-zinc-800/80">
+          <div class="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-500/20 flex flex-col items-center justify-center flex-shrink-0">
+            <span class="text-2xl animate-bounce">🔥</span>
+          </div>
+          <div>
+            <div class="flex items-baseline gap-1.5">
+              <span id="streak-counter" class="text-2xl font-black font-mono text-amber-400">1</span>
+              <span class="text-xs font-bold text-zinc-300">Days Streak</span>
+            </div>
+            <p class="text-[11px] text-zinc-400 mt-0.5">Zero zero-days allowed</p>
+            <p class="text-[10px] text-amber-400 font-medium">Record: <span id="best-streak-record">1</span> days</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. POMODORO MINI FLOATING TRIGGER & POPUP MODAL -->
+    <div id="pomodoro-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="glass-card max-w-md w-full rounded-3xl p-6 border-indigo-500/40 shadow-2xl relative">
+        <button onclick="closePomodoroModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 text-sm transition">
+          ✕
+        </button>
+        <div class="text-center space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            FOCUS DRILL ENGINE
+          </div>
+
+          <!-- Timer Mode Switcher -->
+          <div class="flex justify-center gap-2 p-1 bg-zinc-900/90 rounded-xl border border-zinc-800 max-w-xs mx-auto text-xs">
+            <button id="pomo-mode-45" onclick="setPomoMode(45)" class="flex-1 py-1.5 rounded-lg font-bold bg-indigo-600 text-white transition">45m Study</button>
+            <button id="pomo-mode-10" onclick="setPomoMode(10)" class="flex-1 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition">10m Break</button>
+            <button id="pomo-mode-25" onclick="setPomoMode(25)" class="flex-1 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition">25m Quick</button>
+          </div>
+
+          <!-- Circular SVG timer -->
+          <div class="relative w-52 h-52 mx-auto flex items-center justify-center">
+            <svg class="w-52 h-52 transform -rotate-90" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="44" stroke-width="6" class="text-zinc-800" stroke="currentColor" fill="none" />
+              <circle id="pomo-circle" cx="50" cy="50" r="44" stroke-width="6" class="text-indigo-500 transition-all duration-500 stroke-current" stroke-dasharray="276.46" stroke-dashoffset="0" stroke-linecap="round" fill="none" />
+            </svg>
+            <div class="absolute text-center">
+              <div id="pomo-time-display" class="text-4xl font-black font-mono tracking-tight text-white">45:00</div>
+              <div id="pomo-status-label" class="text-xs font-semibold uppercase tracking-wider text-indigo-400 mt-1">Focus Block</div>
+            </div>
+          </div>
+
+          <!-- Timer Controls -->
+          <div class="flex items-center justify-center gap-3 pt-2">
+            <button id="pomo-start-btn" onclick="togglePomodoro()" class="px-7 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition transform active:scale-95 flex items-center gap-2">
+              <svg id="pomo-play-icon" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span id="pomo-btn-text">Start Block</span>
+            </button>
+            <button onclick="resetPomodoro()" class="p-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+
+          <!-- Session Stats -->
+          <div class="pt-3 border-t border-zinc-800/80 flex items-center justify-around text-xs text-zinc-400">
+            <div>Today's Blocks: <span id="pomo-sessions-count" class="font-mono font-bold text-white">0</span></div>
+            <div>Time Focused: <span id="pomo-focus-mins" class="font-mono font-bold text-indigo-300">0 mins</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. PHASE SWITCHER NAVIGATION BUTTONS (1-CLICK SWITCH) -->
+    <section class="space-y-2.5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
+          <span>📅</span> Strategic Roadmap Phases
+        </h2>
+        <span class="text-xs text-zinc-500">Click any phase to filter syllabus & targets</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+        
+        <!-- Phase 1 -->
+        <button onclick="switchPhase(1)" id="phase-btn-1" class="phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-indigo-950/40 border-indigo-500 text-white shadow-lg shadow-indigo-900/30">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-indigo-500 text-white font-mono">PHASE 1</span>
+            <span class="text-[10px] text-indigo-300 font-mono">Nov 6 - Nov 25</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs font-bold leading-snug">PT-2 & Tuition Sprints</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5 truncate">Solids, Fluids, Thermo, Straight Lines</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[10px]">
+            <span class="text-zinc-400" id="phase-badge-1-count">0/8</span>
+            <span class="text-indigo-400 font-bold" id="phase-badge-1-pct">0%</span>
+          </div>
+        </button>
+
+        <!-- Phase 2 -->
+        <button onclick="switchPhase(2)" id="phase-btn-2" class="phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">PHASE 2</span>
+            <span class="text-[10px] text-zinc-500 font-mono">Nov 26 - Dec 1</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs font-bold leading-snug">Mechanics & Backlogs</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5 truncate">Kinematics, Vectors, Sets, Mole Concept</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[10px]">
+            <span class="text-zinc-400" id="phase-badge-2-count">0/7</span>
+            <span class="text-zinc-400 font-bold" id="phase-badge-2-pct">0%</span>
+          </div>
+        </button>
+
+        <!-- Phase 3 -->
+        <button onclick="switchPhase(3)" id="phase-btn-3" class="phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">PHASE 3</span>
+            <span class="text-[10px] text-zinc-500 font-mono">Dec 2 - Dec 12</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs font-bold leading-snug">Gaon Trip Mode</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5 truncate">Inorganic, Bonding, Pocketbook 3-4h/d</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[10px]">
+            <span class="text-zinc-400" id="phase-badge-3-count">0/4</span>
+            <span class="text-zinc-400 font-bold" id="phase-badge-3-pct">0%</span>
+          </div>
+        </button>
+
+        <!-- Phase 4 -->
+        <button onclick="switchPhase(4)" id="phase-btn-4" class="phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">PHASE 4</span>
+            <span class="text-[10px] text-zinc-500 font-mono">Dec 13 - Jan 15</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs font-bold leading-snug">Heavy Weightage Core</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5 truncate">Rotation, Organic, Conics, Waves, Calculus</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[10px]">
+            <span class="text-zinc-400" id="phase-badge-4-count">0/14</span>
+            <span class="text-zinc-400 font-bold" id="phase-badge-4-pct">0%</span>
+          </div>
+        </button>
+
+        <!-- Phase 5 -->
+        <button onclick="switchPhase(5)" id="phase-btn-5" class="phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">PHASE 5</span>
+            <span class="text-[10px] text-zinc-500 font-mono">Jan 16 - Feb 15</span>
+          </div>
+          <div class="mt-2">
+            <div class="text-xs font-bold leading-snug">70/70 Mock Drill</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5 truncate">Grand Mocks, 15 Derivation Speed-Runs</div>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[10px]">
+            <span class="text-zinc-400" id="phase-badge-5-count">0/3</span>
+            <span class="text-zinc-400 font-bold" id="phase-badge-5-pct">0%</span>
+          </div>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 5. PHASE-WISE SYLLABUS & STRATEGY DATABASE (PRIMARY WORKSPACE) -->
+    <section class="glass-card rounded-2xl p-5 border-zinc-800/90 space-y-5">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="current-phase-title" class="text-lg font-black text-white">PHASE 1: PT-2 & Tuition Sprints (Nov 6 – Nov 25)</span>
+            <span id="current-phase-status-pill" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">Active Goal</span>
+          </div>
+          <p id="current-phase-desc" class="text-xs text-zinc-400 mt-1">High-yield sprint targeted at immediate tuition exam dominance and PT-2 70/70 simulation score.</p>
+        </div>
+
+        <!-- Subject Filter & Search -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="inline-flex p-1 bg-zinc-900 rounded-xl border border-zinc-800 text-xs">
+            <button onclick="setSubjectFilter('all')" id="sub-filter-all" class="sub-filter-btn px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white">All</button>
+            <button onclick="setSubjectFilter('math')" id="sub-filter-math" class="sub-filter-btn px-3 py-1 rounded-lg text-zinc-400 hover:text-white">Maths</button>
+            <button onclick="setSubjectFilter('physics')" id="sub-filter-physics" class="sub-filter-btn px-3 py-1 rounded-lg text-zinc-400 hover:text-white">Physics</button>
+            <button onclick="setSubjectFilter('chem')" id="sub-filter-chem" class="sub-filter-btn px-3 py-1 rounded-lg text-zinc-400 hover:text-white">Chemistry</button>
+          </div>
+
+          <div class="relative">
+            <input type="text" id="chapter-search" oninput="filterChapters()" placeholder="Search topic or formula..." class="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-500 w-44 md:w-56">
+          </div>
+        </div>
+      </div>
+
+      <!-- Syllabus Chapters List -->
+      <div id="chapters-container" class="space-y-4">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </section>
+
+    <!-- 6. INTEGRATED DAILY ROUTINE & SCHEDULE MATRIX -->
+    <section class="glass-card rounded-2xl p-5 border-zinc-800/90 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>⏰</span> Daily Routine & Schedule Matrix
+            </h2>
+            <span id="active-day-mode-badge" class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold">
+              School Day Mode
+            </span>
+          </div>
+          <p class="text-xs text-zinc-400 mt-0.5">Strict time boxing with hard 1.5h cap on video editing to protect 70/70 study turnaround.</p>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div class="flex items-center gap-2">
+          <div class="inline-flex p-1 bg-zinc-900 rounded-xl border border-zinc-800 text-xs">
+            <button onclick="setScheduleMode('school')" id="sched-mode-school" class="px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white transition">
+              School Day (M/Th/F)
+            </button>
+            <button onclick="setScheduleMode('self')" id="sched-mode-self" class="px-3 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition">
+              Self-Study (Tu/W/Sa/Su)
+            </button>
+          </div>
+          <button onclick="autoDetectDayMode()" title="Auto detect today's day mode" class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl text-xs text-zinc-400 hover:text-white font-medium transition">
+            Today
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule Timeline Rows -->
+      <div id="schedule-matrix-rows" class="space-y-2.5">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- 7. DEDICATED DISCIPLINE & HABIT TRACKER SECTION -->
+    <section id="discipline-tracker-section" class="glass-card rounded-2xl p-5 sm:p-6 border-zinc-800/90 space-y-6">
+      
+      <!-- Top Section Header & Analytics Ribbon -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-zinc-800/80 pb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-2.5">
+              <span class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">🔥</span>
+              <span>Discipline & Non-Negotiable Habit Tracker</span>
+            </h2>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold font-mono">
+              Zero-Tolerance System
+            </span>
+          </div>
+          <p class="text-xs text-zinc-400 mt-1">90-Day execution roadmap from Nov 6, 2026 to Feb 15, 2027. State persists per date with retroactive audit access.</p>
+        </div>
+
+        <!-- Metric Badges: Streak, Record, 7-Day Score -->
+        <div class="grid grid-cols-3 gap-2.5 sm:gap-3 flex-shrink-0">
+          <!-- Active Streak -->
+          <div class="bg-zinc-900/80 border border-amber-500/30 px-3 py-2 rounded-xl text-center relative overflow-hidden">
+            <div class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Current Streak</div>
+            <div class="flex items-center justify-center gap-1 mt-0.5">
+              <span class="text-lg font-black font-mono text-white" id="habit-stat-streak">0</span>
+              <span class="text-base animate-bounce">🔥</span>
+            </div>
+            <div class="text-[9px] text-zinc-400">≥80% required</div>
+          </div>
+
+          <!-- Longest Record -->
+          <div class="bg-zinc-900/80 border border-indigo-500/30 px-3 py-2 rounded-xl text-center">
+            <div class="text-[10px] uppercase font-bold text-indigo-400 tracking-wider">Best Streak</div>
+            <div class="flex items-center justify-center gap-1 mt-0.5">
+              <span class="text-lg font-black font-mono text-white" id="habit-stat-best">0</span>
+              <span class="text-xs text-indigo-300">days</span>
+            </div>
+            <div class="text-[9px] text-zinc-400">Personal record</div>
+          </div>
+
+          <!-- Weekly Discipline Score -->
+          <div class="bg-zinc-900/80 border border-emerald-500/30 px-3 py-2 rounded-xl text-center">
+            <div class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">7-Day Score</div>
+            <div class="flex items-center justify-center gap-0.5 mt-0.5">
+              <span class="text-lg font-black font-mono text-emerald-400" id="habit-stat-weekly-pct">0%</span>
+            </div>
+            <div class="text-[9px] text-zinc-400" id="habit-stat-weekly-days">0/7 Days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 1: GITHUB-STYLE 90-DAY HABIT HEATMAP -->
+      <div class="bg-slate-900/70 border border-zinc-800/80 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+              <span>📅</span> 90-Day Contribution Heatmap (Nov 6, 2026 – Feb 15, 2027)
+            </h3>
+            <p class="text-[11px] text-zinc-400">Click any day cell to view or modify that date's non-negotiable habits and accountability log.</p>
+          </div>
+
+          <!-- Legend -->
+          <div class="flex items-center gap-2 text-[10px] text-zinc-400 font-medium">
+            <span>Less</span>
+            <span class="w-3.5 h-3.5 rounded bg-slate-800/60 border border-zinc-700/50" title="0 habits"></span>
+            <span class="w-3.5 h-3.5 rounded bg-emerald-950/80 border border-emerald-900/60" title="1-2 habits"></span>
+            <span class="w-3.5 h-3.5 rounded bg-emerald-600 border border-emerald-500" title="3-4 habits"></span>
+            <span class="w-3.5 h-3.5 rounded bg-emerald-400 text-slate-950 shadow-sm shadow-emerald-400/50 font-bold" title="5+ habits"></span>
+            <span>More (5+ 🏆)</span>
+          </div>
+        </div>
+
+        <!-- Heatmap Scrollable Container -->
+        <div class="overflow-x-auto pb-2 pt-1">
+          <div id="heatmap-container" class="inline-block min-w-full">
+            <!-- Dynamic 7-row by N-week GitHub grid rendered here -->
+          </div>
+        </div>
+
+        <div id="heatmap-selection-hint" class="text-[11px] text-zinc-400 flex items-center justify-between pt-1 border-t border-zinc-800/60">
+          <span id="heatmap-active-date-info">Selected Date: <strong class="text-emerald-400">2026-11-06</strong></span>
+          <span class="text-indigo-400 font-mono text-[10px]">Tip: Click any square above to inspect or edit that day</span>
+        </div>
+      </div>
+
+      <!-- Part 2 & 3: DATE SELECTOR, DAILY CHECKLIST CARDS & ACCOUNTABILITY AUDIT -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
+        <!-- Left: 6 Core Non-Negotiable Habits (7 Cols) -->
+        <div class="lg:col-span-7 bg-slate-900/60 border border-zinc-800/90 rounded-2xl p-4 sm:p-5 space-y-4">
+          
+          <!-- Date Navigator Bar & Progress -->
+          <div class="space-y-3 border-b border-zinc-800/80 pb-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5">
+                <button onclick="navigateHabitDate(-1)" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs transition">
+                  ◀ Prev
+                </button>
+                <div class="px-3 py-1 bg-zinc-900 border border-zinc-700 rounded-lg text-xs font-mono font-bold text-white flex items-center gap-2">
+                  <span id="selected-date-display">2026-11-06</span>
+                  <span id="selected-date-badge" class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300">Active</span>
+                </div>
+                <button onclick="navigateHabitDate(1)" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs transition">
+                  Next ▶
+                </button>
+                <button onclick="jumpToTodayHabits()" class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-indigo-400 text-xs font-semibold transition ml-1">
+                  Today
+                </button>
+              </div>
+
+              <!-- Completion Ratio Pill -->
+              <div class="text-right flex items-center gap-2">
+                <span id="date-habits-score" class="font-mono text-xs font-black text-emerald-400">0/6 Done (0%)</span>
+              </div>
+            </div>
+
+            <!-- Daily Habit Completion Progress Bar with 100% Celebration -->
+            <div class="space-y-1">
+              <div class="w-full bg-zinc-800 rounded-full h-2.5 overflow-hidden p-0.5 border border-zinc-700/60">
+                <div id="date-habits-progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+              <div id="celebration-banner" class="hidden text-[11px] text-center font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-500/50 rounded-lg py-1.5 px-3 shadow-lg shadow-emerald-500/20 animate-pulse">
+                🏆 100% DISCIPLINE LOCKED FOR THIS DAY! EXCELLENT FOCUS!
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Interactive Checkbox Cards -->
+          <div id="daily-habits-cards" class="space-y-2.5">
+            <!-- Injected via JavaScript -->
+          </div>
+
+        </div>
+
+        <!-- Right: Daily Accountability & Mistake Audit Log (5 Cols) -->
+        <div class="lg:col-span-5 bg-slate-900/60 border border-zinc-800/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span>📝</span> Accountability & Mistake Audit
+                </h3>
+                <p class="text-[11px] text-zinc-400 mt-0.5">Daily audit for <span id="audit-date-label" class="font-mono text-emerald-400 font-semibold">2026-11-06</span></p>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">1-Min Nightly</span>
+            </div>
+
+            <!-- Audit Form -->
+            <div class="space-y-3 mt-3.5 text-xs">
+              <div>
+                <label class="block font-semibold text-emerald-400 mb-1 flex items-center gap-1.5">
+                  <span>🌟</span> Biggest Win Today
+                </label>
+                <textarea id="audit-win-input" rows="2" placeholder="e.g. Solved 25 Sequence & Series questions without checking solutions..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition text-xs"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-rose-400 mb-1 flex items-center gap-1.5">
+                  <span>⚠️</span> Where did I waste time / What went wrong?
+                </label>
+                <textarea id="audit-waste-input" rows="2" placeholder="e.g. Drifted onto YouTube for 25 mins after dinner; phone wasn't locked..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-rose-500 transition text-xs"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-semibold text-sky-400 mb-1 flex items-center gap-1.5">
+                  <span>🎯</span> Tomorrow's #1 Focus Target
+                </label>
+                <textarea id="audit-target-input" rows="2" placeholder="e.g. Master Bernoulli theorem derivation and solve 3 fluids numericals..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-sky-500 transition text-xs"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="saveDailyAudit()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+              <span>Save Accountability Log</span>
+            </button>
+            <p id="audit-save-msg" class="text-[10px] text-center text-zinc-500 mt-1 h-3.5"></p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Past Reflections Quick Timeline / Archive -->
+      <div class="border-t border-zinc-800/80 pt-4">
+        <button onclick="toggleAuditHistory()" class="text-xs text-zinc-400 hover:text-white flex items-center gap-1.5 font-semibold transition">
+          <span id="audit-history-toggle-icon">▶</span>
+          <span>View Past Accountability & Reflection Logs Archive</span>
+        </button>
+        <div id="audit-history-container" class="hidden mt-3 space-y-2.5 max-h-60 overflow-y-auto pr-1">
+          <!-- Dynamically populated past audits -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 8. MOCK TEST & SCHOOL ASSESSMENT TRACKER -->
+    <section class="glass-card rounded-2xl p-5 border-zinc-800/90 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span>📊</span> Mock Test & School Assessment Tracker
+            </h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 font-semibold font-mono">
+              70/70 Target Benchmarking
+            </span>
+          </div>
+          <p class="text-xs text-zinc-400 mt-0.5">Track every tuition test, PT-2 mock simulations, and grand annual mocks. Unforgiving score analytics.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="openNewTestModal()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-600/20 transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add New Test
+          </button>
+        </div>
+      </div>
+
+      <!-- Test Table (Responsive) -->
+      <div class="overflow-x-auto rounded-xl border border-zinc-800">
+        <table class="w-full text-left text-xs text-zinc-300">
+          <thead class="bg-zinc-900/90 text-zinc-400 font-bold uppercase tracking-wider text-[10px] border-b border-zinc-800">
+            <tr>
+              <th class="py-3 px-3.5">Date</th>
+              <th class="py-3 px-3.5">Test Title</th>
+              <th class="py-3 px-3.5">Subject</th>
+              <th class="py-3 px-3.5">Target</th>
+              <th class="py-3 px-3.5">Scored</th>
+              <th class="py-3 px-3.5">Weak Topics Identified</th>
+              <th class="py-3 px-3.5 text-center">Revised?</th>
+              <th class="py-3 px-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="test-table-body" class="divide-y divide-zinc-800/80">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Test Summary Card -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-zinc-500">Total Tests</div>
+          <div id="stat-total-tests" class="text-lg font-black font-mono text-white mt-0.5">0</div>
+        </div>
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-zinc-500">Average Score %</div>
+          <div id="stat-avg-score" class="text-lg font-black font-mono text-indigo-400 mt-0.5">0%</div>
+        </div>
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-zinc-500">Score Deficiency</div>
+          <div id="stat-score-gap" class="text-lg font-black font-mono text-rose-400 mt-0.5">0 pts</div>
+        </div>
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-zinc-500">Mistakes Revised</div>
+          <div id="stat-revised-ratio" class="text-lg font-black font-mono text-emerald-400 mt-0.5">0/0</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ADD / EDIT TEST MODAL -->
+  <div id="test-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 border-zinc-800 shadow-2xl relative">
+      <button onclick="closeTestModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 text-sm transition">
+        ✕
+      </button>
+      <h3 id="test-modal-title" class="text-base font-bold text-white mb-4">Log Test Assessment</h3>
+      <form id="test-form" onsubmit="handleSaveTest(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="test-form-id">
+        <div>
+          <label class="block text-zinc-300 font-semibold mb-1">Test Name</label>
+          <input type="text" id="test-form-name" required placeholder="e.g. Tuition Test (Straight Lines)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-zinc-300 font-semibold mb-1">Subject</label>
+            <select id="test-form-subject" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Grand Mock (PCM)">Grand Mock (PCM)</option>
+              <option value="English / CS">English / CS</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-zinc-300 font-semibold mb-1">Exam Date</label>
+            <input type="date" id="test-form-date" required class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-zinc-300 font-semibold mb-1">Target Score</label>
+            <input type="number" id="test-form-target" required step="0.5" placeholder="e.g. 25 or 70" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-zinc-300 font-semibold mb-1">Scored Marks</label>
+            <input type="number" id="test-form-scored" step="0.5" placeholder="e.g. 23.5 (Leave blank if pending)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-zinc-300 font-semibold mb-1">Weak Topics & Calculation Errors</label>
+          <input type="text" id="test-form-weak" placeholder="e.g. Normal form sign convention, Bernoulli unit conversions" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="test-form-revised" class="w-4 h-4 rounded">
+          <label for="test-form-revised" class="text-zinc-300 font-medium">Corrections & error re-solve completed</label>
+        </div>
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="closeTestModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl font-medium transition">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition">Save Test</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CHAPTER QUICK NOTE MODAL -->
+  <div id="chapter-note-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 border-zinc-800 shadow-2xl relative">
+      <button onclick="closeChapterNoteModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-2 text-sm transition">
+        ✕
+      </button>
+      <h3 id="note-modal-chapter-title" class="text-base font-bold text-white mb-1">Chapter Strategy Notes</h3>
+      <p id="note-modal-chapter-sub" class="text-xs text-zinc-400 mb-3">Key formulas, starred NCERT questions, and tuition test focus.</p>
+      <input type="hidden" id="note-modal-chapter-id">
+      <textarea id="note-modal-textarea" rows="6" placeholder="Write key formulas to memorize, starred questions (e.g. NCERT Ex 9.3 Q14, 18), or tuition test dates..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500 font-mono"></textarea>
+      <div class="flex justify-end gap-2 mt-4">
+        <button onclick="closeChapterNoteModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-medium transition">Cancel</button>
+        <button onclick="saveChapterNote()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">Save Notes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- APPLICATION JAVASCRIPT & STATE MANAGEMENT -->
+  <script>
+    /* ==========================================================================
+       STORAGE KEYS & INITIAL DATA ARCHITECTURE
+       ========================================================================== */
+    const STORAGE_KEY = 'MISSION_TOPPER_STUDY_OS_V1';
+
+    // Default Phase-Wise Database
+    const DEFAULT_CHAPTERS = [
+      // PHASE 1: PT-2 & Tuition Sprints (Nov 6 – Nov 25)
+      {
+        id: 'p1_m1',
+        phase: 1,
+        subject: 'math',
+        title: 'Sequence & Series',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Target: Next Wed Tuition Test',
+        topics: 'AP, GP, nth term, sum of n terms, AM & GM relations, NCERT drills',
+        notes: 'Tuition test on Wednesday! Memorize sum of n terms of GP: a(r^n - 1)/(r - 1) and AM >= GM trick.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_m2',
+        phase: 1,
+        subject: 'math',
+        title: 'Straight Lines',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Target: Next Thu Tuition Test',
+        topics: 'Slope, Intercept form, Normal Form (x cos w + y sin w = p), Angle between lines, Distance between parallel lines',
+        notes: 'Tuition test on Thursday! Pay special attention to perpendicular distance formula and normal form conversion.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_m3',
+        phase: 1,
+        subject: 'math',
+        title: 'Probability',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'NCERT Drills & Tuition Checklist',
+        topics: 'Sample space, Events, Mutually exclusive/exhaustive, Axiomatic probability',
+        notes: 'Clear axiomatic relations P(A U B) = P(A) + P(B) - P(A ∩ B).',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_p1',
+        phase: 1,
+        subject: 'physics',
+        title: 'Mechanical Properties of Solids',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'PT-2 High-Yield 5 Marks',
+        topics: 'Stress-Strain curve, Hooke\'s Law, Young\'s/Shear/Bulk Moduli, Elastic potential energy derivation U = 1/2 stress x strain x volume',
+        notes: 'Derivation for elastic potential energy in a stretched wire is guaranteed 3-mark question.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_p2',
+        phase: 1,
+        subject: 'physics',
+        title: 'Mechanical Properties of Fluids',
+        badge: 'MIX: ONE-SHOT + DERIVATIONS',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Critical Derivations Hub',
+        topics: 'Pascal\'s Law, Continuity Equation, Bernoulli Derivation, Viscosity, Terminal Velocity formula derivation, Surface Tension',
+        notes: 'Must write Bernoulli theorem & Terminal velocity derivations by hand 3 times.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_p3',
+        phase: 1,
+        subject: 'physics',
+        title: 'Thermal Properties of Matter',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'PT-2 Formula Speed-Run',
+        topics: 'Thermal expansion (alpha, beta, gamma), Calorimetry principle, Newton\'s Law of Cooling, Conduction & Radiation',
+        notes: 'Calorimetry heat loss = heat gained principle + anomalous expansion of water.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_c1',
+        phase: 1,
+        subject: 'chem',
+        title: 'Chemical Thermodynamics',
+        badge: 'DETAILED: WORK/HEAT, ONE-SHOT: REST',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'High Weightage PT-2 Core',
+        topics: 'Sign conventions (IUPAC), First Law, w = -P_ext dV, Enthalpy of reaction, Hess\'s Law, Second Law, Gibbs Free Energy delta G = delta H - T delta S',
+        notes: 'Watch signs of delta G: negative = spontaneous. Hess law numericals in NCERT back exercise are mandatory.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p1_c2',
+        phase: 1,
+        subject: 'chem',
+        title: 'Equilibrium & Rate Laws',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Conceptual Numerical Drill',
+        topics: 'Equilibrium constant Kc/Kp relations, Le Chatelier\'s Principle, Solubility product Ksp, Basic reaction rate laws',
+        notes: 'Le Chatelier effect of temperature on endothermic vs exothermic reactions.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+
+      // PHASE 2: Core Backlogs & Mechanics Foundation (Nov 26 – Dec 1)
+      {
+        id: 'p2_m1',
+        phase: 2,
+        subject: 'math',
+        title: 'Sets, Relations & Functions',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Prerequisite for Calculus',
+        topics: 'Venn diagrams, Cartesian products, Domain and Range, Types of relations',
+        notes: 'Domain and Range questions from NCERT misc exercise.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_m2',
+        phase: 2,
+        subject: 'math',
+        title: 'Trigonometric Functions Basics',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Formula Foundation',
+        topics: 'Trig ratios of allied angles, Compound angle formulas, sin(A+B), cos(A+B), 2A/3A formulas, Transformation identities',
+        notes: 'Write full Trigonometric formula pocket-sheet. Essential for Class 12 Calculus.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_p1',
+        phase: 2,
+        subject: 'physics',
+        title: 'Units & Measurements',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Quick 3-Mark Scoring',
+        topics: 'Dimensional analysis, Principle of homogeneity, Significant figures & error analysis',
+        notes: 'Deducing relation between physical quantities using dimensions.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_p2',
+        phase: 2,
+        subject: 'physics',
+        title: 'Motion in a Straight Line',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Kinematics 1D',
+        topics: 'Position-time graphs, Calculus derivations of kinematics equations (v = u + at, s = ut + 1/2at^2, v^2 = u^2 + 2as), Relative velocity',
+        notes: 'Kinematic equation derivations by calculus method.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_p3',
+        phase: 2,
+        subject: 'physics',
+        title: 'Vectors & Motion in a Plane',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Kinematics 2D',
+        topics: 'Vector resolution, Dot & Cross products, Projectile motion derivation (Time of flight, Max height, Range)',
+        notes: 'Derivations for Projectile motion are mandatory for school exams.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_c1',
+        phase: 2,
+        subject: 'chem',
+        title: 'Some Basic Concepts of Chemistry',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Mole Concept Foundation',
+        topics: 'Mole concept, Molar mass, Empirical & Molecular formula, Stoichiometry, Limiting reagent, Molarity & Molality',
+        notes: 'Limiting reagent NCERT numericals.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p2_c2',
+        phase: 2,
+        subject: 'chem',
+        title: 'Structure of Atom',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Quantum Numbers Hub',
+        topics: 'Bohr\'s model postulates, de Broglie relation, Heisenberg\'s uncertainty principle, Quantum numbers (n, l, m, s), Aufbau/Hund/Pauli rules',
+        notes: 'Electronic configurations of Cr (24) and Cu (29) exceptions.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+
+      // PHASE 3: Gaon Trip Low-Resource Mode (Dec 2 – Dec 12)
+      {
+        id: 'p3_c1',
+        phase: 3,
+        subject: 'chem',
+        title: 'Classification of Elements & Periodicity',
+        badge: 'OFFLINE NCERT READ',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        targetNote: 'Inorganic Reading Session',
+        topics: 'Modern periodic law, Periodic trends in atomic radius, Ionization enthalpy exceptions (Be vs B, N vs O), Electron gain enthalpy, Electronegativity',
+        notes: 'Lightweight offline NCERT line-by-line reading. Note all reasoning questions.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p3_c2',
+        phase: 3,
+        subject: 'chem',
+        title: 'Chemical Bonding & Molecular Structure',
+        badge: 'HANDWRITTEN POCKETBOOK',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        targetNote: 'VSEPR & Hybridization',
+        topics: 'Lewis structures, Formal charge, VSEPR Theory geometries, Valence Bond Theory, Hybridization (sp, sp2, sp3, sp3d), Molecular Orbital Theory (O2, N2 paramagnetic)',
+        notes: 'Draw all VSEPR shapes (SF4, ClF3, XeF4) and MOT diagrams by hand.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p3_p1',
+        phase: 3,
+        subject: 'physics',
+        title: 'Physics Formula Cheatsheets (NLM & WEP)',
+        badge: 'POCKETBOOK DRILL',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        targetNote: 'Formula Retention Session',
+        topics: 'Laws of motion, Banking of roads formula, Friction laws, Work-energy theorem, Collisions formulas in 1D & 2D',
+        notes: 'Create pocketbook while in Gaon for 3-4 hours daily offline practice.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p3_m1',
+        phase: 3,
+        subject: 'math',
+        title: 'Mathematics Formula Handbook',
+        badge: 'FORMULA DRILL',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        targetNote: 'Trig & Algebra Flashcards',
+        topics: 'Summary sheets for Trigonometry, Binomial, Straight lines, and Sequences',
+        notes: 'Re-memorize all formulas without reference.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+
+      // PHASE 4: Heavy Weightage Core (Dec 13 – Jan 15)
+      {
+        id: 'p4_p1',
+        phase: 4,
+        subject: 'physics',
+        title: 'Laws of Motion & Friction',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Core Mechanics Block',
+        topics: 'Newton\'s 2nd & 3rd laws, Momentum conservation, Friction (static, kinetic, rolling), Banking of circular roads with & without friction',
+        notes: 'Derivation for optimum and maximum velocity on a banked road.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_p2',
+        phase: 4,
+        subject: 'physics',
+        title: 'Work, Energy & Power',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Work-Energy Theorem',
+        topics: 'Work done by constant & variable force, Work-Energy theorem proof, Potential energy of a spring, Elastic vs Inelastic collisions in 1D',
+        notes: 'Derivation for final velocities in 1D elastic collision.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_p3',
+        phase: 4,
+        subject: 'physics',
+        title: 'System of Particles & Rotational Motion',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Heaviest Weightage Physics',
+        topics: 'Center of mass, Torque, Angular momentum conservation, Moment of Inertia of ring, disc, cylinder, Rolling motion',
+        notes: 'Angular momentum conservation principle and torque relation tau = I * alpha.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_p4',
+        phase: 4,
+        subject: 'physics',
+        title: 'Gravitation',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Clean Scoring Chapter',
+        topics: 'Kepler\'s Laws, Acceleration due to gravity variation with altitude & depth, Gravitational potential energy, Escape velocity, Satellite velocity',
+        notes: 'Derivations: g with altitude, g with depth, and escape velocity ve = sqrt(2GM/R).',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_p5',
+        phase: 4,
+        subject: 'physics',
+        title: 'Oscillations & Waves',
+        badge: 'MIX: ONE-SHOT + DERIVATIONS',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Final Physics Block',
+        topics: 'Simple Harmonic Motion equation, Simple pendulum time period T = 2pi sqrt(l/g), Energy in SHM, Longitudinal vs Transverse waves, Speed of sound (Laplace correction), Standing waves in organ pipes',
+        notes: 'Simple pendulum derivation and open/closed organ pipe harmonics.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_m1',
+        phase: 4,
+        subject: 'math',
+        title: 'Linear Inequalities & Complex Numbers',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Algebra Power Pack',
+        topics: 'Linear inequalities graphical solution, Complex numbers algebra, Modulus and Conjugate, Quadratic equations with complex roots',
+        notes: 'Graphical solution of system of linear inequalities in two variables.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_m2',
+        phase: 4,
+        subject: 'math',
+        title: 'Permutations & Combinations',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Logic & Counting Principles',
+        topics: 'Fundamental principle of counting, Factorial notation, nPr and nCr derivations, Word arrangement problems, Selection logic',
+        notes: 'NCERT back exercise questions on letter rearrangements with vowels together.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_m3',
+        phase: 4,
+        subject: 'math',
+        title: 'Binomial Theorem',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Algebra Core',
+        topics: 'Binomial expansion formula for positive integer index, General term T_(r+1), Middle term calculation',
+        notes: 'General term T_(r+1) = nCr a^(n-r) b^r problems.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_m4',
+        phase: 4,
+        subject: 'math',
+        title: 'Conic Sections',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'High Weightage Geometry',
+        topics: 'Circle standard equation, Parabola (4 standard forms, focus, directrix, latus rectum), Ellipse (eccentricity, foci), Hyperbola',
+        notes: 'Table of formulas for Parabola, Ellipse, Hyperbola. Focus on finding foci, vertices, and latus rectum.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_m5',
+        phase: 4,
+        subject: 'math',
+        title: 'Limits & Derivatives',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+        targetNote: 'Gateway to Class 12',
+        topics: 'Algebra of limits, Trig limits lim(x->0) sinx/x = 1, First principle of differentiation, Product & Quotient rules',
+        notes: 'First principle differentiation of sin x, cos x, x^n is guaranteed in annual exams.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_c1',
+        phase: 4,
+        subject: 'chem',
+        title: 'Redox Reactions',
+        badge: 'ONE-SHOT',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Fast Scoring 4-Marks',
+        topics: 'Oxidation numbers rules, Balancing redox reactions (Ion-electron method and Oxidation number method in acidic/basic medium)',
+        notes: 'Balancing in acidic medium: Cr2O7(2-) + Fe(2+) -> Cr(3+) + Fe(3+).',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_c2',
+        phase: 4,
+        subject: 'chem',
+        title: 'Organic Chemistry: Basic Principles & Techniques',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Critical Foundation for GOC',
+        topics: 'IUPAC nomenclature rules, Structural & Stereoisomerism, Inductive effect, Electromeric effect, Resonance, Hyperconjugation, Carbocation stability',
+        notes: 'Order of carbocation and free radical stability (3° > 2° > 1°). Master inductive and resonance effects.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p4_c3',
+        phase: 4,
+        subject: 'chem',
+        title: 'Hydrocarbons',
+        badge: 'DETAILED LECTURE',
+        badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        targetNote: 'Major Reaction Bank',
+        topics: 'Alkanes (Wurtz reaction, Kolbe electrolysis, Halogenation mechanism), Alkenes (Markovnikov & Anti-Markovnikov addition, Ozonolysis), Alkynes (Acidity of ethyne), Aromaticity & Electrophilic aromatic substitution (Nitration, Friedel-Crafts)',
+        notes: 'Ozonolysis reaction trick and Markovnikov vs Peroxide effect mechanisms.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+
+      // PHASE 5: The 70/70 Mock Exam Marathon (Jan 16 – Feb 15)
+      {
+        id: 'p5_1',
+        phase: 5,
+        subject: 'other',
+        title: 'Full 3-Hour Timed School Mock Tests',
+        badge: 'EXAM SIMULATION',
+        badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+        targetNote: 'Weekly Full Grand Mocks',
+        topics: 'Solve 1 full question paper under strict 3-hour exam conditions without looking at answers. Complete analysis within 2 hours.',
+        notes: 'Focus on question selection, handwriting speed, and presentation layout.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p5_2',
+        phase: 5,
+        subject: 'physics',
+        title: 'Derivations Speed-Runs (Top 15)',
+        badge: '60-MIN SPRINT',
+        badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+        targetNote: 'Speed & Precision Drill',
+        topics: 'Write all 15 key Physics derivations in 60 mins: Bernoulli, Terminal velocity, Banked road, Projectile range, Elastic potential, Simple pendulum, Escape velocity, Organ pipes, etc.',
+        notes: 'Keep derivations sheet clean with well-labeled diagrams.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      },
+      {
+        id: 'p5_3',
+        phase: 5,
+        subject: 'other',
+        title: 'Computer Science & English Tuition Review',
+        badge: 'SIDE SUBJECT DRILL',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        targetNote: 'Overall Percentage Shield',
+        topics: 'Python basics, Strings, Lists, Tuples in CS; English literature summaries, writing formats (Letters, Speech, Notice).',
+        notes: 'Do not let auxiliary subjects drag down aggregate score below 90%.',
+        checks: { lecture: false, notes: false, ncertEx: false, backQ: false, pyq: false }
+      }
+    ];
+
+    // Schedules
+    const SCHEDULE_DATA = {
+      school: [
+        { id: 'sc_1', time: '05:30 - 07:30 AM', title: 'High-Focus Physics/Maths Problem Solving', category: 'math', badge: 'DEEP WORK', desc: 'No phone, freshest brain. Solve 20 challenging NCERT / Tuition test problems.', done: false },
+        { id: 'sc_2', time: '09:00 - 03:00 PM', title: 'School (NCERT Review & Formula Drills)', category: 'other', badge: 'SCHOOL', desc: 'Utilize free periods & lunch break for formula revisions, in-text examples, and teacher doubts.', done: false },
+        { id: 'sc_3', time: '03:30 - 05:00 PM', title: 'Pre-Tuition Revision & In-text Examples', category: 'physics', badge: 'REVISION', desc: 'Review notes, formulas, and homework questions before heading to coaching.', done: false },
+        { id: 'sc_4', time: '06:00 - 09:00 PM', title: 'Scheduled Tuition (Wed/Thu Maths, Mon/Fri English)', category: 'math', badge: 'TUITION', desc: 'Active class participation, clear doubts on spot, mark test questions.', done: false },
+        { id: 'sc_5', time: '09:30 - 11:00 PM', title: 'Video Editing & Clipping Window (Hard 1.5h Cap)', category: 'work', badge: 'WORK LIMIT', desc: 'Strict cutoff timer! Deliver client work, export clips, then shut down video editor.', done: false },
+        { id: 'sc_6', time: '11:00 - 12:30 AM', title: 'Tuition Homework & Day Review', category: 'chem', badge: 'NIGHT AUDIT', desc: 'Finish assigned problems, log daily reflection, pack bag for morning.', done: false }
+      ],
+      self: [
+        { id: 'sf_1', time: '06:30 - 08:30 AM', title: 'Physics Core & Derivations Block', category: 'physics', badge: 'DERIVATIONS', desc: 'Write 3 key derivations by hand, memorize formulas, solve illustrative numericals.', done: false },
+        { id: 'sf_2', time: '09:30 - 12:30 PM', title: 'Mathematics Pen-Paper Problem Solving', category: 'math', badge: '3-HOUR DEEP', desc: 'Intense 3-hour solving block: NCERT Miscellaneous + Tuition test drills.', done: false },
+        { id: 'sf_3', time: '02:00 - 04:00 PM', title: 'Chemistry Conceptual Numerical Practice', category: 'chem', badge: 'CHEMISTRY', desc: 'Thermodynamics / Equilibrium numerical drills and reaction mechanisms.', done: false },
+        { id: 'sf_4', time: '04:30 - 06:00 PM', title: 'Backlog & Revision Slot', category: 'other', badge: 'BACKLOG', desc: 'Target Phase 2 backlogs or formula pocketbook creation.', done: false },
+        { id: 'sf_5', time: '06:30 - 08:00 PM', title: 'Video Editing & Client Deliverables', category: 'work', badge: 'WORK LIMIT', desc: '1.5-hour hard stop for creative client tasks.', done: false },
+        { id: 'sf_6', time: '09:00 - 11:30 PM', title: 'Problem Solving / Tuition Test Drill', category: 'math', badge: 'TIMED TEST', desc: 'Timed mock test simulation under exam pressure. Strict self-checking.', done: false }
+      ]
+    };
+
+    // 6 Core Non-Negotiable Habits Definition
+    const CORE_HABITS_DEF = [
+      {
+        id: 'h_phone',
+        icon: '📵',
+        title: 'Phone Lockdown',
+        desc: 'Phone stored outside study desk during all focus blocks'
+      },
+      {
+        id: 'h_scroll',
+        icon: '🚫',
+        title: 'Zero Doom-Scrolling',
+        desc: '0 minutes spent on Instagram/Shorts/reels'
+      },
+      {
+        id: 'h_work',
+        icon: '⏱️',
+        title: 'Work Discipline',
+        desc: 'Video editing & clipping strictly capped at ≤ 1.5 hours'
+      },
+      {
+        id: 'h_deriv',
+        icon: '✍️',
+        title: 'Derivation Drill',
+        desc: 'At least 2 Physics derivations written by hand without reference'
+      },
+      {
+        id: 'h_math',
+        icon: '🧮',
+        title: '25 Math Problems',
+        desc: 'Solved 25 NCERT examples/questions with full steps on paper'
+      },
+      {
+        id: 'h_health',
+        icon: '💧',
+        title: 'Health & Recovery',
+        desc: '3L water intake + minimum 7 hours sleep maintained'
+      }
+    ];
+
+    const HEATMAP_START = '2026-11-06';
+    const HEATMAP_END = '2027-02-15';
+
+    const INITIAL_HABIT_LOGS = {
+      '2026-11-06': {
+        habits: { h_phone: true, h_scroll: true, h_work: true, h_deriv: true, h_math: true, h_health: true },
+        win: 'Solved 25 Sequence & Series NCERT questions and mastered Bernoulli theorem derivation.',
+        waste: 'Spent 10 extra mins rendering video transition; need to batch exports.',
+        target: 'Straight lines normal form and 20 practice questions.'
+      },
+      '2026-11-07': {
+        habits: { h_phone: true, h_scroll: true, h_work: true, h_deriv: true, h_math: true, h_health: false },
+        win: 'Wrote Young\'s modulus and stress-strain curve derivations from memory.',
+        waste: 'Slept 6 hours instead of 7.',
+        target: 'Fluids continuity equation & terminal velocity formulas.'
+      },
+      '2026-11-08': {
+        habits: { h_phone: true, h_scroll: true, h_work: true, h_deriv: true, h_math: true, h_health: true },
+        win: 'Full 3-hour pen paper math session with zero interruptions.',
+        waste: 'None! Kept phone completely isolated the entire morning.',
+        target: 'Chemical thermodynamics enthalpy and Hess\'s law drills.'
+      }
+    };
+
+    // Pre-filled Mock Tests
+    const DEFAULT_TESTS = [
+      { id: 't1', date: '2026-11-12', name: 'Tuition Test (Sequence & Series)', subject: 'Mathematics', target: 25, scored: null, weak: 'Sum of infinite GP trick, AM-GM inequalities', revised: false },
+      { id: 't2', date: '2026-11-13', name: 'Tuition Test (Straight Lines)', subject: 'Mathematics', target: 25, scored: null, weak: 'Normal form conversion and perpendicular distance', revised: false },
+      { id: 't3', date: '2026-11-22', name: 'Physics PT-2 Mock Simulation', subject: 'Physics', target: 70, scored: null, weak: 'Bernoulli derivation step 3, Elastic potential calculation', revised: false },
+      { id: 't4', date: '2026-11-23', name: 'Chemistry PT-2 Mock Simulation', subject: 'Chemistry', target: 70, scored: null, weak: 'Hess\'s law sign handling, delta G criteria', revised: false },
+      { id: 't5', date: '2026-11-24', name: 'Mathematics PT-2 Mock Simulation', subject: 'Mathematics', target: 80, scored: null, weak: 'Speed in calculation, Section B proof formulation', revised: false },
+      { id: 't6', date: '2027-01-20', name: 'Full Class 11 Grand Mock 1 (PCM)', subject: 'Grand Mock (PCM)', target: 70, scored: null, weak: 'Rotational torque numericals, Conic sections', revised: false },
+      { id: 't7', date: '2027-01-27', name: 'Full Class 11 Grand Mock 2 (PCM)', subject: 'Grand Mock (PCM)', target: 70, scored: null, weak: 'Organic GOC acidity ranking', revised: false },
+      { id: 't8', date: '2027-02-03', name: 'Full Class 11 Grand Mock 3 (PCM)', subject: 'Grand Mock (PCM)', target: 70, scored: null, weak: 'Waves standing harmonics formula', revised: false },
+      { id: 't9', date: '2027-02-10', name: 'Full Class 11 Grand Mock 4 (PCM)', subject: 'Grand Mock (PCM)', target: 70, scored: null, weak: 'Limits first principle speed', revised: false }
+    ];
+
+    /* ==========================================================================
+       APP STATE
+       ========================================================================== */
+    let appState = {
+      activePhase: 1,
+      subjectFilter: 'all',
+      scheduleMode: 'school', // 'school' | 'self'
+      selectedHabitDate: '2026-11-06',
+      habitLogs: INITIAL_HABIT_LOGS,
+      chapters: DEFAULT_CHAPTERS,
+      schedules: SCHEDULE_DATA,
+      tests: DEFAULT_TESTS,
+      streak: 3,
+      bestStreak: 3,
+      lastStreakDate: '2026-11-08',
+      reflections: {
+        win: '',
+        fix: '',
+        date: new Date().toISOString().split('T')[0]
+      },
+      pomo: {
+        modeMins: 45,
+        secondsLeft: 45 * 60,
+        isRunning: false,
+        sessionsToday: 0,
+        focusMinsToday: 0
+      }
+    };
+
+    /* ==========================================================================
+       INITIALIZATION & LOCAL STORAGE
+       ========================================================================== */
+    function loadSavedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          // Merge to ensure schema safety
+          appState = {
+            ...appState,
+            ...parsed,
+            chapters: parsed.chapters || DEFAULT_CHAPTERS,
+            schedules: parsed.schedules || SCHEDULE_DATA,
+            habitLogs: (parsed.habitLogs && Object.keys(parsed.habitLogs).length > 0) ? parsed.habitLogs : INITIAL_HABIT_LOGS,
+            selectedHabitDate: parsed.selectedHabitDate || '2026-11-06',
+            tests: parsed.tests || DEFAULT_TESTS,
+            pomo: {
+              ...appState.pomo,
+              ...(parsed.pomo || {}),
+              isRunning: false // Always pause timer on reload
+            }
+          };
+        }
+      } catch (e) {
+        console.error('Failed to load storage state:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        updateAllMetrics();
+      } catch (e) {
+        console.error('Error saving state:', e);
+      }
+    }
+
+    /* ==========================================================================
+       AUDIO SYNTHESIZER (WEB AUDIO API)
+       ========================================================================== */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playBeep(frequency = 880, duration = 0.2, type = 'sine') {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio play error:', e);
+      }
+    }
+
+    function playCompletionChime() {
+      try {
+        // Melodic ascending victory chime
+        playBeep(523.25, 0.2, 'sine'); // C5
+        setTimeout(() => playBeep(659.25, 0.2, 'sine'), 160); // E5
+        setTimeout(() => playBeep(783.99, 0.2, 'sine'), 320); // G5
+        setTimeout(() => playBeep(1046.50, 0.45, 'triangle'), 480); // C6
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    function testAudioChime() {
+      playCompletionChime();
+      showToast('🔊 Audio alert chime tested successfully!');
+    }
+
+    /* ==========================================================================
+       UI TOASTS
+       ========================================================================== */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `p-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto ${
+        type === 'success' 
+          ? 'bg-emerald-950/90 text-emerald-200 border-emerald-500/40' 
+          : 'bg-zinc-900/90 text-zinc-100 border-zinc-700'
+      }`;
+      toast.innerHTML = `<span>⚡</span><span>${message}</span>`;
+      container.appendChild(toast);
+      
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    /* ==========================================================================
+       REAL-TIME CLOCK & COUNTDOWNS
+       ========================================================================== */
+    function updateClockAndCountdowns() {
+      const now = new Date();
+      // Current date display in header
+      const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const timeStr = now.toLocaleDateString('en-US', options);
+      const timeEl = document.getElementById('current-time-display');
+      if (timeEl) timeEl.textContent = timeStr;
+
+      // Targets:
+      // 1. PT-2: Nov 25, 2026
+      // 2. Gaon: Dec 2, 2026
+      // 3. Annual Finals: Feb 15, 2027
+      const pt2Date = new Date('2026-11-25T09:00:00');
+      const gaonDate = new Date('2026-12-02T06:00:00');
+      const annualDate = new Date('2027-02-15T09:00:00');
+
+      renderCountdown('pt2', pt2Date, now, 25);
+      renderCountdown('gaon', gaonDate, now, 35);
+      renderCountdown('annual', annualDate, now, 105);
+    }
+
+    function renderCountdown(prefix, targetDate, now, totalSpanDays) {
+      const diffMs = targetDate - now;
+      const daysEl = document.getElementById(`countdown-${prefix}-days`);
+      const detailEl = document.getElementById(`${prefix}-time-detail`);
+      const barEl = document.getElementById(`countdown-${prefix}-bar`);
+
+      if (diffMs <= 0) {
+        if (daysEl) daysEl.textContent = '0';
+        if (detailEl) detailEl.textContent = 'Exam In Progress!';
+        if (barEl) barEl.style.width = '100%';
+        return;
+      }
+
+      const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const remHours = totalHours % 24;
+
+      if (daysEl) daysEl.textContent = days;
+      if (detailEl) detailEl.textContent = `${days}d ${remHours}h`;
+
+      // Visual progress estimation
+      if (barEl) {
+        const remainingDays = days + (remHours / 24);
+        const percent = Math.min(100, Math.max(5, Math.round(((totalSpanDays - remainingDays) / totalSpanDays) * 100)));
+        barEl.style.width = `${percent}%`;
+      }
+    }
+
+    /* ==========================================================================
+       PHASE SWITCHER & SYLLABUS RENDERING
+       ========================================================================== */
+    const PHASE_DETAILS = {
+      1: {
+        title: 'PHASE 1: PT-2 & Tuition Sprints (Nov 6 – Nov 25)',
+        status: 'Active High-Discipline Goal',
+        desc: 'High-yield sprint targeted at immediate tuition exam dominance and PT-2 70/70 simulation score. Solids, Fluids, Thermo, Straight Lines, Sequence & Series.'
+      },
+      2: {
+        title: 'PHASE 2: Core Backlogs & Mechanics Foundation (Nov 26 – Dec 1)',
+        status: 'Rapid Backlog Sprint',
+        desc: 'Fix foundational prerequisites: Trigonometric formulas, Sets & Relations, 1D/2D Kinematics, Vectors, Mole Concept, and Atomic Structure.'
+      },
+      3: {
+        title: 'PHASE 3: Gaon Trip Low-Resource Mode (Dec 2 – Dec 12)',
+        status: 'Low-Resource Mode (3-4h/day)',
+        desc: 'Offline study strategy in Gaon: In-depth NCERT reading for Inorganic chemistry (Classification & Periodicity), Chemical Bonding VSEPR geometries, and handwritten pocket formula books.'
+      },
+      4: {
+        title: 'PHASE 4: Heavy-Weightage Core Syllabi (Dec 13 – Jan 15)',
+        status: 'Heavy Core Weightage',
+        desc: 'Deep theoretical and numerical mastery of rotational motion, work-energy, gravitation, oscillations, calculus limits & derivatives, conics, GOC, and hydrocarbons.'
+      },
+      5: {
+        title: 'PHASE 5: The 70/70 Mock Exam Marathon (Jan 16 – Feb 15)',
+        status: 'Mock Exam Marathon',
+        desc: 'Timed 3-hour school mock tests, 60-minute 15-derivation speed-runs, mistake log rectifications, and Computer Science / English scoring review.'
+      }
+    };
+
+    function switchPhase(phaseNum) {
+      appState.activePhase = phaseNum;
+      
+      // Update Phase buttons UI
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`phase-btn-${i}`);
+        if (!btn) continue;
+        if (i === phaseNum) {
+          btn.className = 'phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-indigo-950/40 border-indigo-500 text-white shadow-lg shadow-indigo-900/30';
+          const badge = btn.querySelector('span:first-child');
+          if (badge) badge.className = 'text-[10px] font-black px-1.5 py-0.5 rounded bg-indigo-500 text-white font-mono';
+        } else {
+          btn.className = 'phase-btn p-3 rounded-xl border text-left transition flex flex-col justify-between bg-slate-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700';
+          const badge = btn.querySelector('span:first-child');
+          if (badge) badge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono';
+        }
+      }
+
+      // Update Phase Title & Details
+      const pInfo = PHASE_DETAILS[phaseNum];
+      if (pInfo) {
+        document.getElementById('current-phase-title').textContent = pInfo.title;
+        document.getElementById('current-phase-status-pill').textContent = pInfo.status;
+        document.getElementById('current-phase-desc').textContent = pInfo.desc;
+        document.getElementById('active-phase-label').textContent = `Phase ${phaseNum}`;
+      }
+
+      renderChapters();
+      updateAllMetrics();
+      saveState();
+    }
+
+    function setSubjectFilter(subj) {
+      appState.subjectFilter = subj;
+      const buttons = ['all', 'math', 'physics', 'chem'];
+      buttons.forEach(b => {
+        const el = document.getElementById(`sub-filter-${b}`);
+        if (!el) return;
+        if (b === subj) {
+          el.className = 'sub-filter-btn px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white';
+        } else {
+          el.className = 'sub-filter-btn px-3 py-1 rounded-lg text-zinc-400 hover:text-white';
+        }
+      });
+      renderChapters();
+    }
+
+    function filterChapters() {
+      renderChapters();
+    }
+
+    function renderChapters() {
+      const container = document.getElementById('chapters-container');
+      if (!container) return;
+      const search = (document.getElementById('chapter-search')?.value || '').toLowerCase();
+
+      const filtered = appState.chapters.filter(ch => {
+        const matchesPhase = ch.phase === appState.activePhase;
+        const matchesSubject = appState.subjectFilter === 'all' || ch.subject === appState.subjectFilter;
+        const matchesSearch = !search || 
+          ch.title.toLowerCase().includes(search) || 
+          ch.topics.toLowerCase().includes(search) ||
+          ch.targetNote.toLowerCase().includes(search);
+        return matchesPhase && matchesSubject && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 bg-zinc-900/40 rounded-2xl border border-zinc-800/80">
+            <span class="text-3xl">🔍</span>
+            <div class="text-sm font-bold text-zinc-300 mt-2">No chapters match your filter</div>
+            <p class="text-xs text-zinc-500 mt-1">Try switching subject tabs or clearing your search query.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(ch => {
+        // Calculate item progress
+        const checkKeys = ['lecture', 'notes', 'ncertEx', 'backQ', 'pyq'];
+        const completedCount = checkKeys.filter(k => ch.checks[k]).length;
+        const pct = Math.round((completedCount / checkKeys.length) * 100);
+
+        // Subject styling
+        let borderClass = 'border-zinc-800 hover:border-zinc-700';
+        let subjectIcon = '📘';
+        let subjectLabel = 'Mathematics';
+        let subjectPill = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
+
+        if (ch.subject === 'physics') {
+          subjectIcon = '⚡';
+          subjectLabel = 'Physics';
+          subjectPill = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
+        } else if (ch.subject === 'chem') {
+          subjectIcon = '🧪';
+          subjectLabel = 'Chemistry';
+          subjectPill = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        } else if (ch.subject === 'other') {
+          subjectIcon = '🎯';
+          subjectLabel = 'Strategic Mock / Allied';
+          subjectPill = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+        }
+
+        if (pct === 100) {
+          borderClass = 'border-emerald-500/40 bg-emerald-950/10';
+        }
+
+        return `
+          <div class="glass-card rounded-2xl p-4 border transition ${borderClass}">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              
+              <!-- Left: Chapter Title, Badges & Topics -->
+              <div class="space-y-1.5 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-xs px-2 py-0.5 rounded-md border font-semibold ${subjectPill}">
+                    ${subjectIcon} ${subjectLabel}
+                  </span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-md border font-bold uppercase font-mono ${ch.badgeColor || 'bg-zinc-800 text-zinc-300'}">
+                    ${ch.badge}
+                  </span>
+                  <span class="text-[11px] text-zinc-400 font-medium">
+                    ${ch.targetNote}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm sm:text-base font-extrabold text-white tracking-tight">
+                    ${ch.title}
+                  </h3>
+                  ${pct === 100 ? '<span class="text-xs text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded-full">✓ MASTERED</span>' : ''}
+                </div>
+
+                <p class="text-xs text-zinc-400 leading-relaxed">
+                  <span class="text-zinc-500 font-semibold">Topics:</span> ${ch.topics}
+                </p>
+
+                ${ch.notes ? `
+                  <div class="bg-zinc-900/70 border border-zinc-800/80 rounded-xl px-3 py-1.5 text-xs text-zinc-300 font-mono flex items-start gap-2 mt-2">
+                    <span class="text-amber-400 text-xs">💡</span>
+                    <span class="flex-1">${ch.notes}</span>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Right: 5 Individual Checkboxes + Note Button -->
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-5 border-t lg:border-t-0 border-zinc-800/80 pt-3 lg:pt-0">
+                
+                <!-- Checklist grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                  
+                  <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/80 cursor-pointer border border-zinc-800 transition ${ch.checks.lecture ? 'border-indigo-500/50 text-indigo-300' : 'text-zinc-400'}">
+                    <input type="checkbox" ${ch.checks.lecture ? 'checked' : ''} onchange="toggleChapterCheck('${ch.id}', 'lecture')">
+                    <span class="text-[11px] font-medium">Lecture</span>
+                  </label>
+
+                  <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/80 cursor-pointer border border-zinc-800 transition ${ch.checks.notes ? 'border-indigo-500/50 text-indigo-300' : 'text-zinc-400'}">
+                    <input type="checkbox" ${ch.checks.notes ? 'checked' : ''} onchange="toggleChapterCheck('${ch.id}', 'notes')">
+                    <span class="text-[11px] font-medium">Notes</span>
+                  </label>
+
+                  <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/80 cursor-pointer border border-zinc-800 transition ${ch.checks.ncertEx ? 'border-sky-500/50 text-sky-300' : 'text-zinc-400'}">
+                    <input type="checkbox" ${ch.checks.ncertEx ? 'checked' : ''} onchange="toggleChapterCheck('${ch.id}', 'ncertEx')">
+                    <span class="text-[11px] font-medium">NCERT Ex</span>
+                  </label>
+
+                  <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/80 cursor-pointer border border-zinc-800 transition ${ch.checks.backQ ? 'border-sky-500/50 text-sky-300' : 'text-zinc-400'}">
+                    <input type="checkbox" ${ch.checks.backQ ? 'checked' : ''} onchange="toggleChapterCheck('${ch.id}', 'backQ')">
+                    <span class="text-[11px] font-medium">Back Qs</span>
+                  </label>
+
+                  <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-zinc-900/60 hover:bg-zinc-800/80 cursor-pointer border border-zinc-800 transition ${ch.checks.pyq ? 'border-emerald-500/50 text-emerald-300' : 'text-zinc-400'} col-span-2 sm:col-span-1">
+                    <input type="checkbox" ${ch.checks.pyq ? 'checked' : ''} onchange="toggleChapterCheck('${ch.id}', 'pyq')">
+                    <span class="text-[11px] font-medium">PYQ/Rev</span>
+                  </label>
+
+                </div>
+
+                <!-- Progress Meter & Note button -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                  <div class="text-right">
+                    <div class="text-xs font-mono font-extrabold ${pct === 100 ? 'text-emerald-400' : 'text-indigo-300'}">${pct}%</div>
+                    <div class="text-[10px] text-zinc-500 font-mono">${completedCount}/5 steps</div>
+                  </div>
+
+                  <button onclick="openChapterNoteModal('${ch.id}')" title="Edit Formula & Strategy Notes" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleChapterCheck(chapterId, key) {
+      const ch = appState.chapters.find(c => c.id === chapterId);
+      if (!ch) return;
+      ch.checks[key] = !ch.checks[key];
+      if (ch.checks[key]) {
+        playBeep(700, 0.08, 'sine');
+      }
+      saveState();
+      renderChapters();
+    }
+
+    /* ==========================================================================
+       CHAPTER NOTES MODAL
+       ========================================================================== */
+    function openChapterNoteModal(chapterId) {
+      const ch = appState.chapters.find(c => c.id === chapterId);
+      if (!ch) return;
+      document.getElementById('note-modal-chapter-id').value = chapterId;
+      document.getElementById('note-modal-chapter-title').textContent = `${ch.title} Notes`;
+      document.getElementById('note-modal-textarea').value = ch.notes || '';
+      document.getElementById('chapter-note-modal').classList.remove('hidden');
+    }
+
+    function closeChapterNoteModal() {
+      document.getElementById('chapter-note-modal').classList.add('hidden');
+    }
+
+    function saveChapterNote() {
+      const id = document.getElementById('note-modal-chapter-id').value;
+      const ch = appState.chapters.find(c => c.id === id);
+      if (ch) {
+        ch.notes = document.getElementById('note-modal-textarea').value.trim();
+        saveState();
+        renderChapters();
+        closeChapterNoteModal();
+        showToast('Chapter notes saved!', 'success');
+      }
+    }
+
+    /* ==========================================================================
+       DAILY ROUTINE & SCHEDULE MATRIX
+       ========================================================================== */
+    function setScheduleMode(mode) {
+      appState.scheduleMode = mode;
+      const schoolBtn = document.getElementById('sched-mode-school');
+      const selfBtn = document.getElementById('sched-mode-self');
+      const badge = document.getElementById('active-day-mode-badge');
+
+      if (mode === 'school') {
+        schoolBtn.className = 'px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white transition';
+        selfBtn.className = 'px-3 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition';
+        badge.textContent = 'School Day Mode (Mon, Thu, Fri)';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold';
+      } else {
+        selfBtn.className = 'px-3 py-1.5 rounded-lg font-bold bg-indigo-600 text-white transition';
+        schoolBtn.className = 'px-3 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition';
+        badge.textContent = 'Self-Study Day Mode (Tue, Wed, Sat, Sun)';
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold';
+      }
+
+      renderScheduleMatrix();
+      saveState();
+    }
+
+    function autoDetectDayMode() {
+      const day = new Date().getDay(); // 0 is Sunday, 1 is Monday...
+      // Mon (1), Thu (4), Fri (5) are School Days
+      if (day === 1 || day === 4 || day === 5) {
+        setScheduleMode('school');
+        showToast('Auto-detected: School Day Mode active');
+      } else {
+        setScheduleMode('self');
+        showToast('Auto-detected: Self-Study Day Mode active');
+      }
+    }
+
+    function renderScheduleMatrix() {
+      const container = document.getElementById('schedule-matrix-rows');
+      if (!container) return;
+
+      const items = appState.schedules[appState.scheduleMode] || [];
+      const currentHour = new Date().getHours();
+      const currentMin = new Date().getMinutes();
+      const nowTotalMin = currentHour * 60 + currentMin;
+
+      container.innerHTML = items.map(item => {
+        // Parse time slot to see if active
+        // format: "05:30 - 07:30 AM" or "09:30 - 11:00 PM"
+        let isNowSlot = false;
+        try {
+          const parts = item.time.split('-');
+          if (parts.length === 2) {
+            const startStr = parts[0].trim();
+            const endFull = parts[1].trim(); // e.g. "07:30 AM"
+            const ampm = endFull.includes('PM') ? 'PM' : 'AM';
+            const endClean = endFull.replace('AM', '').replace('PM', '').trim();
+            const [sH, sM] = startStr.split(':').map(Number);
+            const [eH, eM] = endClean.split(':').map(Number);
+
+            let sHours24 = sH % 12 + (ampm === 'PM' && sH < 12 ? 12 : 0);
+            if (startStr.includes('PM') && sH < 12) sHours24 = sH + 12;
+            let eHours24 = eH % 12 + (ampm === 'PM' && eH < 12 ? 12 : 0);
+
+            // Special handle morning vs evening slots
+            if (item.time.includes('11:00 - 12:30 AM')) {
+              sHours24 = 23;
+              eHours24 = 24.5;
+            }
+
+            const startTotal = sHours24 * 60 + (sM || 0);
+            const endTotal = (eHours24 === 24.5 ? 24 * 60 + 30 : eHours24 * 60 + (eM || 0));
+            if (nowTotalMin >= startTotal && nowTotalMin < endTotal) {
+              isNowSlot = true;
+            }
+          }
+        } catch (e) {
+          // ignore parsing error
+        }
+
+        // Category color
+        let catColor = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
+        if (item.category === 'physics') catColor = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
+        if (item.category === 'chem') catColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        if (item.category === 'work') catColor = 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+        if (item.category === 'other') catColor = 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
+
+        const rowBg = item.done ? 'bg-zinc-950/40 opacity-70' : 'bg-zinc-900/40 hover:bg-zinc-900/70';
+
+        return `
+          <div class="flex items-center justify-between p-3 rounded-xl border ${isNowSlot ? 'border-indigo-500 shadow-md shadow-indigo-500/20 bg-indigo-950/20' : 'border-zinc-800/80'} ${rowBg} transition">
+            
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleScheduleItem('${item.id}')" class="w-4 h-4 rounded mt-0.5 flex-shrink-0">
+              
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-mono text-xs font-bold ${isNowSlot ? 'text-indigo-300' : 'text-zinc-300'}">
+                    ${item.time}
+                  </span>
+                  ${isNowSlot ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500 text-white font-extrabold uppercase animate-pulse">CURRENT SLOT</span>' : ''}
+                  <span class="text-[10px] px-2 py-0.5 rounded border font-semibold ${catColor}">
+                    ${item.badge}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-white mt-1 ${item.done ? 'line-through text-zinc-500' : ''}">
+                  ${item.title}
+                </div>
+                <div class="text-[11px] text-zinc-400 truncate mt-0.5 ${item.done ? 'text-zinc-600' : ''}">
+                  ${item.desc}
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right flex-shrink-0 ml-3">
+              <span class="text-[11px] font-mono font-semibold ${item.done ? 'text-emerald-400' : 'text-zinc-500'}">
+                ${item.done ? '✓ Done' : 'Pending'}
+              </span>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleScheduleItem(id) {
+      const mode = appState.scheduleMode;
+      const item = appState.schedules[mode].find(s => s.id === id);
+      if (!item) return;
+      item.done = !item.done;
+      if (item.done) playBeep(800, 0.08, 'sine');
+      saveState();
+      renderScheduleMatrix();
+    }
+
+    /* ==========================================================================
+       DEDICATED DISCIPLINE & HABIT TRACKER (HEATMAP, CARDS, AUDIT, ANALYTICS)
+       ========================================================================== */
+    function getTodayDateStr() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function ensureHabitDay(dateStr) {
+      if (!appState.habitLogs[dateStr]) {
+        appState.habitLogs[dateStr] = {
+          habits: {},
+          win: '',
+          waste: '',
+          target: ''
+        };
+      }
+      return appState.habitLogs[dateStr];
+    }
+
+    function countHabitsForDate(dateStr) {
+      const dayData = appState.habitLogs[dateStr];
+      if (!dayData || !dayData.habits) return 0;
+      let count = 0;
+      CORE_HABITS_DEF.forEach(h => {
+        if (dayData.habits[h.id] === true) count++;
+      });
+      return count;
+    }
+
+    function renderHabitHeatmap() {
+      const container = document.getElementById('heatmap-container');
+      if (!container) return;
+
+      // Dates: Nov 6, 2026 to Feb 15, 2027
+      const startDate = new Date(2026, 10, 6); // Nov 6, 2026
+      const endDate = new Date(2027, 1, 15);   // Feb 15, 2027
+      
+      const days = [];
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, '0');
+        const d = String(cur.getDate()).padStart(2, '0');
+        days.push({
+          dateStr: `${y}-${m}-${d}`,
+          dateObj: new Date(cur),
+          dayOfWeek: (cur.getDay() + 6) % 7, // 0 = Mon, 6 = Sun
+          month: cur.getMonth()
+        });
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      // Group days into 7 rows (Mon-Sun) across week columns
+      // Week 0: starts on Friday (index 4). Days before are null pads.
+      const weeks = [];
+      let currentWeek = new Array(7).fill(null);
+      
+      days.forEach((dayInfo, idx) => {
+        const dayIdx = dayInfo.dayOfWeek;
+        currentWeek[dayIdx] = dayInfo;
+        
+        // If Sunday or last day, push week
+        if (dayIdx === 6 || idx === days.length - 1) {
+          weeks.push([...currentWeek]);
+          currentWeek = new Array(7).fill(null);
+        }
+      });
+
+      // Month labels calculation: identify first week of each month
+      let monthLabelsHtml = '<div class="flex gap-1.5 ml-8 mb-1.5 text-[10px] font-mono text-zinc-400 font-bold select-none">';
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      let lastMonthSeen = -1;
+
+      weeks.forEach((week) => {
+        const firstDayInWeek = week.find(d => d !== null);
+        if (firstDayInWeek && firstDayInWeek.month !== lastMonthSeen) {
+          lastMonthSeen = firstDayInWeek.month;
+          monthLabelsHtml += `<div class="w-5 text-indigo-400 whitespace-nowrap">${monthNames[firstDayInWeek.month]}</div>`;
+        } else {
+          monthLabelsHtml += `<div class="w-5"></div>`;
+        }
+      });
+      monthLabelsHtml += '</div>';
+
+      const weekdayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      
+      // Build 7 rows
+      let gridRowsHtml = '';
+      for (let r = 0; r < 7; r++) {
+        let rowHtml = `<div class="flex items-center gap-1.5 mb-1.5">`;
+        // Weekday label
+        rowHtml += `<span class="w-6 text-[10px] text-zinc-500 font-mono text-right pr-1">${r % 2 === 0 ? weekdayLabels[r] : ''}</span>`;
+
+        weeks.forEach((week) => {
+          const day = week[r];
+          if (!day) {
+            rowHtml += `<div class="w-5 h-5 rounded-md bg-transparent"></div>`;
+          } else {
+            const count = countHabitsForDate(day.dateStr);
+            let colorClass = 'bg-slate-800/50 border border-zinc-800/80 hover:border-zinc-500';
+            if (count >= 5) {
+              colorClass = 'bg-emerald-400 border border-emerald-300 text-slate-950 shadow-sm shadow-emerald-400/50 font-bold';
+            } else if (count >= 3) {
+              colorClass = 'bg-emerald-600 border border-emerald-500 text-white shadow-sm shadow-emerald-600/30';
+            } else if (count >= 1) {
+              colorClass = 'bg-emerald-950/80 border border-emerald-900/60 text-emerald-400 hover:border-emerald-600';
+            }
+
+            const isSelected = day.dateStr === appState.selectedHabitDate;
+            const ringClass = isSelected ? 'ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-950 scale-110 z-10' : '';
+            const pct = Math.round((count / 6) * 100);
+            const tooltip = `${day.dateStr}: ${count}/6 habits completed (${pct}%)`;
+
+            rowHtml += `
+              <div 
+                onclick="selectHabitDate('${day.dateStr}')" 
+                title="${tooltip}" 
+                class="w-5 h-5 rounded-md ${colorClass} ${ringClass} transition transform hover:scale-115 active:scale-95 cursor-pointer flex items-center justify-center text-[8px] font-mono select-none"
+              >
+                ${count >= 5 ? '✓' : ''}
+              </div>
+            `;
+          }
+        });
+
+        rowHtml += `</div>`;
+        gridRowsHtml += rowHtml;
+      }
+
+      container.innerHTML = `
+        <div class="inline-block">
+          ${monthLabelsHtml}
+          ${gridRowsHtml}
+        </div>
+      `;
+
+      // Update info banner
+      const hintEl = document.getElementById('heatmap-active-date-info');
+      if (hintEl) {
+        const count = countHabitsForDate(appState.selectedHabitDate);
+        hintEl.innerHTML = `Selected Date: <strong class="text-emerald-400 font-mono">${appState.selectedHabitDate}</strong> • Score: <strong>${count}/6 Habits (${Math.round(count/6*100)}%)</strong>`;
+      }
+    }
+
+    function selectHabitDate(dateStr) {
+      appState.selectedHabitDate = dateStr;
+      saveState();
+      renderHabitHeatmap();
+      renderDailyHabits();
+      renderDailyAudit();
+      calculateStreakStats();
+    }
+
+    function navigateHabitDate(direction) {
+      const cur = new Date(appState.selectedHabitDate);
+      cur.setDate(cur.getDate() + direction);
+      const y = cur.getFullYear();
+      const m = String(cur.getMonth() + 1).padStart(2, '0');
+      const d = String(cur.getDate()).padStart(2, '0');
+      const nextStr = `${y}-${m}-${d}`;
+      selectHabitDate(nextStr);
+    }
+
+    function jumpToTodayHabits() {
+      selectHabitDate(getTodayDateStr());
+    }
+
+    function renderDailyHabits() {
+      const container = document.getElementById('daily-habits-cards');
+      if (!container) return;
+
+      const dateStr = appState.selectedHabitDate;
+      const dayData = ensureHabitDay(dateStr);
+      const todayStr = getTodayDateStr();
+
+      // Update Date Header
+      const dateDisplay = document.getElementById('selected-date-display');
+      if (dateDisplay) dateDisplay.textContent = dateStr;
+
+      const dateBadge = document.getElementById('selected-date-badge');
+      if (dateBadge) {
+        if (dateStr === todayStr) {
+          dateBadge.textContent = 'Today';
+          dateBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold';
+        } else if (dateStr < todayStr) {
+          dateBadge.textContent = 'Past';
+          dateBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 font-bold';
+        } else {
+          dateBadge.textContent = 'Future Target';
+          dateBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-bold';
+        }
+      }
+
+      // Count completed
+      const count = countHabitsForDate(dateStr);
+      const pct = Math.round((count / 6) * 100);
+
+      const scoreEl = document.getElementById('date-habits-score');
+      if (scoreEl) {
+        scoreEl.textContent = `${count}/6 Done (${pct}%)`;
+        scoreEl.className = `font-mono text-xs font-black ${pct >= 80 ? 'text-emerald-400' : 'text-zinc-400'}`;
+      }
+
+      const barEl = document.getElementById('date-habits-progress-bar');
+      if (barEl) barEl.style.width = `${pct}%`;
+
+      const celebrationBanner = document.getElementById('celebration-banner');
+      if (celebrationBanner) {
+        if (count === 6) {
+          celebrationBanner.classList.remove('hidden');
+        } else {
+          celebrationBanner.classList.add('hidden');
+        }
+      }
+
+      // Render the 6 interactive cards
+      container.innerHTML = CORE_HABITS_DEF.map(habit => {
+        const isDone = dayData.habits && dayData.habits[habit.id] === true;
+        const cardBorder = isDone 
+          ? 'border-emerald-500/50 bg-emerald-950/20 shadow-sm shadow-emerald-500/10' 
+          : 'border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900/70';
+
+        return `
+          <label class="flex items-start gap-3.5 p-3.5 rounded-xl border ${cardBorder} cursor-pointer transition select-none group">
+            <input 
+              type="checkbox" 
+              ${isDone ? 'checked' : ''} 
+              onchange="toggleHabitForDate('${dateStr}', '${habit.id}')" 
+              class="w-4 h-4 rounded mt-0.5 flex-shrink-0 cursor-pointer accent-emerald-500"
+            >
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-base">${habit.icon}</span>
+                <span class="text-xs font-bold ${isDone ? 'text-emerald-300' : 'text-white'} group-hover:text-emerald-200 transition">
+                  ${habit.title}
+                </span>
+              </div>
+              <p class="text-[11px] text-zinc-400 mt-1 leading-snug ${isDone ? 'text-zinc-500' : ''}">
+                ${habit.desc}
+              </p>
+            </div>
+            <div class="flex-shrink-0 text-right">
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded ${isDone ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-zinc-800 text-zinc-500'}">
+                ${isDone ? 'PASSED ✓' : 'REQUIRED'}
+              </span>
+            </div>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function toggleHabitForDate(dateStr, habitId) {
+      const dayData = ensureHabitDay(dateStr);
+      if (!dayData.habits) dayData.habits = {};
+      const current = !!dayData.habits[habitId];
+      dayData.habits[habitId] = !current;
+
+      if (!current) {
+        playBeep(850, 0.09, 'sine');
+      }
+
+      const newCount = countHabitsForDate(dateStr);
+      if (newCount === 6) {
+        playCompletionChime();
+        showToast(`🏆 100% DISCIPLINE LOCKED FOR ${dateStr}!`, 'success');
+      }
+
+      saveState();
+      renderHabitHeatmap();
+      renderDailyHabits();
+      calculateStreakStats();
+      updateAllMetrics();
+    }
+
+    function renderDailyAudit() {
+      const dateStr = appState.selectedHabitDate;
+      const dayData = ensureHabitDay(dateStr);
+
+      const label = document.getElementById('audit-date-label');
+      if (label) label.textContent = dateStr;
+
+      const winEl = document.getElementById('audit-win-input');
+      const wasteEl = document.getElementById('audit-waste-input');
+      const targetEl = document.getElementById('audit-target-input');
+
+      if (winEl) winEl.value = dayData.win || '';
+      if (wasteEl) wasteEl.value = dayData.waste || '';
+      if (targetEl) targetEl.value = dayData.target || '';
+
+      renderAuditHistory();
+    }
+
+    function saveDailyAudit() {
+      const dateStr = appState.selectedHabitDate;
+      const dayData = ensureHabitDay(dateStr);
+
+      const win = (document.getElementById('audit-win-input')?.value || '').trim();
+      const waste = (document.getElementById('audit-waste-input')?.value || '').trim();
+      const target = (document.getElementById('audit-target-input')?.value || '').trim();
+
+      dayData.win = win;
+      dayData.waste = waste;
+      dayData.target = target;
+
+      saveState();
+      renderAuditHistory();
+
+      const msg = document.getElementById('audit-save-msg');
+      if (msg) {
+        msg.textContent = '✓ Log saved for ' + dateStr;
+        setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+      }
+      showToast(`Accountability audit saved for ${dateStr}!`, 'success');
+    }
+
+    function renderAuditHistory() {
+      const container = document.getElementById('audit-history-container');
+      if (!container) return;
+
+      const entries = Object.keys(appState.habitLogs || {})
+        .filter(d => {
+          const log = appState.habitLogs[d];
+          return log && (log.win || log.waste || log.target);
+        })
+        .sort((a, b) => b.localeCompare(a)); // Descending
+
+      if (entries.length === 0) {
+        container.innerHTML = `<div class="text-xs text-zinc-500 py-2">No past reflections saved yet. Write your daily audit above!</div>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(d => {
+        const log = appState.habitLogs[d];
+        const count = countHabitsForDate(d);
+        return `
+          <div class="bg-zinc-900/70 border border-zinc-800 rounded-xl p-3 space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <div class="font-mono font-bold text-indigo-300 flex items-center gap-2">
+                <span>📅 ${d}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 font-bold">${count}/6 Habits</span>
+              </div>
+              <button onclick="selectHabitDate('${d}')" class="text-[10px] text-zinc-400 hover:text-white underline">
+                View & Edit Day
+              </button>
+            </div>
+            ${log.win ? `<div class="text-zinc-300"><strong class="text-emerald-400">Win:</strong> ${log.win}</div>` : ''}
+            ${log.waste ? `<div class="text-zinc-300"><strong class="text-rose-400">Waste/Fix:</strong> ${log.waste}</div>` : ''}
+            ${log.target ? `<div class="text-zinc-300"><strong class="text-sky-400">Focus Target:</strong> ${log.target}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleAuditHistory() {
+      const container = document.getElementById('audit-history-container');
+      const icon = document.getElementById('audit-history-toggle-icon');
+      if (!container) return;
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        if (icon) icon.textContent = '▼';
+        renderAuditHistory();
+      } else {
+        container.classList.add('hidden');
+        if (icon) icon.textContent = '▶';
+      }
+    }
+
+    function calculateStreakStats() {
+      // Habit qualification threshold: ≥ 80% of 6 is ≥ 5 habits
+      // Sort all logged dates
+      const dates = Object.keys(appState.habitLogs || {}).sort();
+      let bestStreak = 0;
+      let tempStreak = 0;
+      let prevDateObj = null;
+
+      dates.forEach(dStr => {
+        const c = countHabitsForDate(dStr);
+        const [y, m, d] = dStr.split('-').map(Number);
+        const curDate = new Date(y, m - 1, d);
+
+        if (c >= 5) {
+          if (!prevDateObj) {
+            tempStreak = 1;
+          } else {
+            const diffDays = Math.round((curDate - prevDateObj) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+              tempStreak++;
+            } else if (diffDays > 1) {
+              tempStreak = 1;
+            }
+          }
+          if (tempStreak > bestStreak) bestStreak = tempStreak;
+          prevDateObj = curDate;
+        } else {
+          tempStreak = 0;
+          prevDateObj = null;
+        }
+      });
+
+      // Current active streak ending at today (or yesterday if today is still in progress)
+      const today = new Date();
+      let currentStreak = 0;
+      let checkDate = new Date(today);
+
+      while (true) {
+        const y = checkDate.getFullYear();
+        const m = String(checkDate.getMonth() + 1).padStart(2, '0');
+        const d = String(checkDate.getDate()).padStart(2, '0');
+        const dStr = `${y}-${m}-${d}`;
+        const count = countHabitsForDate(dStr);
+
+        if (count >= 5) {
+          currentStreak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          // If today has < 5, but check was for today, give chance to check yesterday
+          if (currentStreak === 0 && dStr === getTodayDateStr()) {
+            checkDate.setDate(checkDate.getDate() - 1);
+            const prevY = checkDate.getFullYear();
+            const prevM = String(checkDate.getMonth() + 1).padStart(2, '0');
+            const prevD = String(checkDate.getDate()).padStart(2, '0');
+            const prevStr = `${prevY}-${prevM}-${prevD}`;
+            if (countHabitsForDate(prevStr) >= 5) {
+              currentStreak++;
+              checkDate.setDate(checkDate.getDate() - 1);
+              continue;
+            }
+          }
+          break;
+        }
+      }
+
+      appState.streak = Math.max(currentStreak, appState.streak || 0);
+      appState.bestStreak = Math.max(bestStreak, currentStreak, appState.bestStreak || 0);
+
+      // Weekly discipline score: last 7 days
+      let last7HabitsTotal = 0;
+      let last7QualifiedDays = 0;
+      for (let i = 0; i < 7; i++) {
+        const past = new Date(today);
+        past.setDate(past.getDate() - i);
+        const y = past.getFullYear();
+        const m = String(past.getMonth() + 1).padStart(2, '0');
+        const d = String(past.getDate()).padStart(2, '0');
+        const dStr = `${y}-${m}-${d}`;
+        const c = countHabitsForDate(dStr);
+        last7HabitsTotal += c;
+        if (c >= 5) last7QualifiedDays++;
+      }
+      const weeklyPct = Math.round((last7HabitsTotal / 42) * 100);
+
+      // DOM updates
+      const streakEl = document.getElementById('habit-stat-streak');
+      if (streakEl) streakEl.textContent = appState.streak;
+      const bestEl = document.getElementById('habit-stat-best');
+      if (bestEl) bestEl.textContent = appState.bestStreak;
+      const weekPctEl = document.getElementById('habit-stat-weekly-pct');
+      if (weekPctEl) weekPctEl.textContent = `${weeklyPct}%`;
+      const weekDaysEl = document.getElementById('habit-stat-weekly-days');
+      if (weekDaysEl) weekDaysEl.textContent = `${last7QualifiedDays}/7 Days`;
+
+      // Sync with top bar
+      const topStreak = document.getElementById('streak-counter');
+      if (topStreak) topStreak.textContent = appState.streak;
+      const topBest = document.getElementById('best-streak-record');
+      if (topBest) topBest.textContent = appState.bestStreak;
+    }
+
+    /* ==========================================================================
+       MOCK TEST & SCHOOL ASSESSMENT TRACKER
+       ========================================================================== */
+    function renderTests() {
+      const tbody = document.getElementById('test-table-body');
+      if (!tbody) return;
+
+      if (appState.tests.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-6 text-zinc-500">No mock tests logged yet. Click "Add New Test" to begin tracking.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = appState.tests.map(test => {
+        let scoreDisplay = '-';
+        let scorePct = 0;
+        let diffBadge = '';
+
+        if (test.scored !== null && test.scored !== undefined && test.scored !== '') {
+          scoreDisplay = `${test.scored} / ${test.target}`;
+          scorePct = Math.round((Number(test.scored) / Number(test.target)) * 100);
+          const diff = Number(test.scored) - Number(test.target);
+          if (diff >= 0) {
+            diffBadge = `<span class="text-[10px] text-emerald-400 font-bold ml-1.5">(+${diff})</span>`;
+          } else {
+            diffBadge = `<span class="text-[10px] text-rose-400 font-bold ml-1.5">(${diff})</span>`;
+          }
+        }
+
+        let subjColor = 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20';
+        if (test.subject === 'Physics') subjColor = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
+        if (test.subject === 'Chemistry') subjColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        if (test.subject.includes('Grand Mock')) subjColor = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+
+        return `
+          <tr class="hover:bg-zinc-900/50 transition">
+            <td class="py-3 px-3.5 font-mono text-zinc-400 whitespace-nowrap">${test.date}</td>
+            <td class="py-3 px-3.5 font-bold text-white">${test.name}</td>
+            <td class="py-3 px-3.5 whitespace-nowrap">
+              <span class="text-[10px] px-2 py-0.5 rounded border font-semibold ${subjColor}">${test.subject}</span>
+            </td>
+            <td class="py-3 px-3.5 font-mono text-zinc-300 font-bold">${test.target}</td>
+            <td class="py-3 px-3.5 font-mono font-extrabold whitespace-nowrap ${scorePct >= 90 ? 'text-emerald-400' : 'text-indigo-300'}">
+              ${scoreDisplay} ${diffBadge}
+            </td>
+            <td class="py-3 px-3.5 text-zinc-400 text-[11px] max-w-xs truncate" title="${test.weak || ''}">${test.weak || '<span class="text-zinc-600">None identified</span>'}</td>
+            <td class="py-3 px-3.5 text-center">
+              <input type="checkbox" ${test.revised ? 'checked' : ''} onchange="toggleTestRevised('${test.id}')" title="Check if errors were corrected by hand" class="w-4 h-4 rounded">
+            </td>
+            <td class="py-3 px-3.5 text-right whitespace-nowrap space-x-1.5">
+              <button onclick="editTest('${test.id}')" class="text-zinc-400 hover:text-white p-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </button>
+              <button onclick="deleteTest('${test.id}')" class="text-rose-400 hover:text-rose-300 p-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update test statistics
+      const totalTests = appState.tests.length;
+      const scoredTests = appState.tests.filter(t => t.scored !== null && t.scored !== undefined && t.scored !== '');
+      let avgPct = 0;
+      let scoreGap = 0;
+      if (scoredTests.length > 0) {
+        const sumPct = scoredTests.reduce((acc, t) => acc + ((Number(t.scored) / Number(t.target)) * 100), 0);
+        avgPct = Math.round(sumPct / scoredTests.length);
+        const sumGap = scoredTests.reduce((acc, t) => acc + (Number(t.target) - Number(t.scored)), 0);
+        scoreGap = Math.round(sumGap);
+      }
+      const revisedCount = appState.tests.filter(t => t.revised).length;
+
+      document.getElementById('stat-total-tests').textContent = totalTests;
+      document.getElementById('stat-avg-score').textContent = `${avgPct}%`;
+      document.getElementById('stat-score-gap').textContent = scoreGap > 0 ? `-${scoreGap} pts` : '0 pts';
+      document.getElementById('stat-revised-ratio').textContent = `${revisedCount} / ${totalTests}`;
+    }
+
+    function toggleTestRevised(id) {
+      const t = appState.tests.find(item => item.id === id);
+      if (!t) return;
+      t.revised = !t.revised;
+      if (t.revised) playBeep(900, 0.08, 'sine');
+      saveState();
+      renderTests();
+    }
+
+    function openNewTestModal() {
+      document.getElementById('test-form-id').value = '';
+      document.getElementById('test-form-name').value = '';
+      document.getElementById('test-form-subject').value = 'Mathematics';
+      document.getElementById('test-form-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('test-form-target').value = 70;
+      document.getElementById('test-form-scored').value = '';
+      document.getElementById('test-form-weak').value = '';
+      document.getElementById('test-form-revised').checked = false;
+      document.getElementById('test-modal-title').textContent = 'Log New Mock Assessment';
+      document.getElementById('test-modal').classList.remove('hidden');
+    }
+
+    function editTest(id) {
+      const t = appState.tests.find(item => item.id === id);
+      if (!t) return;
+      document.getElementById('test-form-id').value = t.id;
+      document.getElementById('test-form-name').value = t.name;
+      document.getElementById('test-form-subject').value = t.subject;
+      document.getElementById('test-form-date').value = t.date;
+      document.getElementById('test-form-target').value = t.target;
+      document.getElementById('test-form-scored').value = t.scored ?? '';
+      document.getElementById('test-form-weak').value = t.weak || '';
+      document.getElementById('test-form-revised').checked = t.revised;
+      document.getElementById('test-modal-title').textContent = 'Edit Test Assessment';
+      document.getElementById('test-modal').classList.remove('hidden');
+    }
+
+    function closeTestModal() {
+      document.getElementById('test-modal').classList.add('hidden');
+    }
+
+    function handleSaveTest(e) {
+      e.preventDefault();
+      const id = document.getElementById('test-form-id').value;
+      const name = document.getElementById('test-form-name').value.trim();
+      const subject = document.getElementById('test-form-subject').value;
+      const date = document.getElementById('test-form-date').value;
+      const target = parseFloat(document.getElementById('test-form-target').value);
+      const scoredRaw = document.getElementById('test-form-scored').value;
+      const scored = scoredRaw !== '' ? parseFloat(scoredRaw) : null;
+      const weak = document.getElementById('test-form-weak').value.trim();
+      const revised = document.getElementById('test-form-revised').checked;
+
+      if (id) {
+        // Edit
+        const t = appState.tests.find(item => item.id === id);
+        if (t) {
+          t.name = name;
+          t.subject = subject;
+          t.date = date;
+          t.target = target;
+          t.scored = scored;
+          t.weak = weak;
+          t.revised = revised;
+        }
+      } else {
+        // New
+        appState.tests.push({
+          id: 'test_' + Date.now(),
+          name,
+          subject,
+          date,
+          target,
+          scored,
+          weak,
+          revised
+        });
+      }
+
+      saveState();
+      renderTests();
+      closeTestModal();
+      showToast('Assessment logged successfully!', 'success');
+    }
+
+    function deleteTest(id) {
+      if (confirm('Delete this mock test entry?')) {
+        appState.tests = appState.tests.filter(t => t.id !== id);
+        saveState();
+        renderTests();
+        showToast('Test removed');
+      }
+    }
+
+    /* ==========================================================================
+       POMODORO PRODUCTIVITY ENGINE
+       ========================================================================== */
+    let pomoInterval = null;
+
+    function openPomodoroModal() {
+      document.getElementById('pomodoro-modal').classList.remove('hidden');
+      updatePomodoroDisplay();
+    }
+
+    function closePomodoroModal() {
+      document.getElementById('pomodoro-modal').classList.add('hidden');
+    }
+
+    function setPomoMode(mins) {
+      if (appState.pomo.isRunning) {
+        clearInterval(pomoInterval);
+        appState.pomo.isRunning = false;
+      }
+      appState.pomo.modeMins = mins;
+      appState.pomo.secondsLeft = mins * 60;
+
+      // Update button styling
+      const modes = [45, 10, 25];
+      modes.forEach(m => {
+        const btn = document.getElementById(`pomo-mode-${m}`);
+        if (!btn) return;
+        if (m === mins) {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-bold bg-indigo-600 text-white transition';
+        } else {
+          btn.className = 'flex-1 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition';
+        }
+      });
+
+      document.getElementById('pomo-status-label').textContent = mins === 10 ? 'Break Recharge' : 'Focus Block';
+      updatePomodoroDisplay();
+    }
+
+    function togglePomodoro() {
+      if (appState.pomo.isRunning) {
+        // Pause
+        clearInterval(pomoInterval);
+        appState.pomo.isRunning = false;
+        document.getElementById('pomo-btn-text').textContent = 'Resume Block';
+        document.getElementById('pomo-play-icon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+      } else {
+        // Start
+        getAudioContext(); // user gesture unlock
+        appState.pomo.isRunning = true;
+        document.getElementById('pomo-btn-text').textContent = 'Pause Block';
+        document.getElementById('pomo-play-icon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+        
+        pomoInterval = setInterval(() => {
+          if (appState.pomo.secondsLeft > 0) {
+            appState.pomo.secondsLeft--;
+            updatePomodoroDisplay();
+          } else {
+            // Finished!
+            clearInterval(pomoInterval);
+            appState.pomo.isRunning = false;
+            playCompletionChime();
+            if (appState.pomo.modeMins !== 10) {
+              appState.pomo.sessionsToday++;
+              appState.pomo.focusMinsToday += appState.pomo.modeMins;
+              showToast('🏆 45-Min Focus Block Completed! Take a 10m break.', 'success');
+            } else {
+              showToast('Break finished! Ready for next study block?', 'info');
+            }
+            saveState();
+            setPomoMode(appState.pomo.modeMins === 45 ? 10 : 45);
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoInterval);
+      appState.pomo.isRunning = false;
+      appState.pomo.secondsLeft = appState.pomo.modeMins * 60;
+      document.getElementById('pomo-btn-text').textContent = 'Start Block';
+      document.getElementById('pomo-play-icon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+      updatePomodoroDisplay();
+    }
+
+    function updatePomodoroDisplay() {
+      const totalSec = appState.pomo.secondsLeft;
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      const str = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+      const disp = document.getElementById('pomo-time-display');
+      if (disp) disp.textContent = str;
+      const headerBadge = document.getElementById('header-pomo-badge');
+      if (headerBadge) headerBadge.textContent = str;
+
+      // Circle stroke dash offset
+      // Circumference = 2 * PI * 44 = 276.46
+      const circle = document.getElementById('pomo-circle');
+      if (circle) {
+        const fullSec = appState.pomo.modeMins * 60;
+        const progress = (fullSec - totalSec) / fullSec;
+        const offset = 276.46 * (1 - progress);
+        circle.style.strokeDashoffset = offset;
+      }
+
+      const sessionsEl = document.getElementById('pomo-sessions-count');
+      if (sessionsEl) sessionsEl.textContent = appState.pomo.sessionsToday;
+      const minsEl = document.getElementById('pomo-focus-mins');
+      if (minsEl) minsEl.textContent = `${appState.pomo.focusMinsToday} mins`;
+    }
+
+    /* ==========================================================================
+       TOP METRICS ENGINE (REACTIVE RECOMPUTATION)
+       ========================================================================== */
+    function updateAllMetrics() {
+      // 1. Overall Class 11 PCM Syllabus progress
+      const checkKeys = ['lecture', 'notes', 'ncertEx', 'backQ', 'pyq'];
+      let totalSteps = 0;
+      let completedSteps = 0;
+
+      let phaseTotalSteps = 0;
+      let phaseCompletedSteps = 0;
+
+      appState.chapters.forEach(ch => {
+        const chDone = checkKeys.filter(k => ch.checks[k]).length;
+        totalSteps += checkKeys.length;
+        completedSteps += chDone;
+
+        if (ch.phase === appState.activePhase) {
+          phaseTotalSteps += checkKeys.length;
+          phaseCompletedSteps += chDone;
+        }
+      });
+
+      const overallPct = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
+      const phasePct = phaseTotalSteps > 0 ? Math.round((phaseCompletedSteps / phaseTotalSteps) * 100) : 0;
+
+      // DOM Updates
+      const overallPctEl = document.getElementById('overall-percentage');
+      if (overallPctEl) overallPctEl.textContent = `${overallPct}%`;
+      const overallBarEl = document.getElementById('overall-progress-bar');
+      if (overallBarEl) overallBarEl.style.width = `${overallPct}%`;
+      const overallCountEl = document.getElementById('overall-checklist-count');
+      if (overallCountEl) overallCountEl.textContent = `${completedSteps} / ${totalSteps} tasks completed`;
+
+      const phasePctEl = document.getElementById('phase-percentage');
+      if (phasePctEl) phasePctEl.textContent = `${phasePct}%`;
+      const phaseBarEl = document.getElementById('phase-progress-bar');
+      if (phaseBarEl) phaseBarEl.style.width = `${phasePct}%`;
+      const phaseCountEl = document.getElementById('phase-checklist-count');
+      if (phaseCountEl) phaseCountEl.textContent = `${phaseCompletedSteps} / ${phaseTotalSteps} sprint tasks`;
+
+      // Update Phase Badge numbers on the top navigation buttons
+      for (let p = 1; p <= 5; p++) {
+        const pChaps = appState.chapters.filter(c => c.phase === p);
+        let pSteps = 0;
+        let pDone = 0;
+        pChaps.forEach(c => {
+          pSteps += checkKeys.length;
+          pDone += checkKeys.filter(k => c.checks[k]).length;
+        });
+        const pPct = pSteps > 0 ? Math.round((pDone / pSteps) * 100) : 0;
+        const bCount = document.getElementById(`phase-badge-${p}-count`);
+        if (bCount) bCount.textContent = `${pDone}/${pSteps}`;
+        const bPct = document.getElementById(`phase-badge-${p}-pct`);
+        if (bPct) bPct.textContent = `${pPct}%`;
+      }
+
+      // 2. Daily Habits + Routine Target Ring (calculated using today's live execution)
+      const activeSched = appState.schedules[appState.scheduleMode] || [];
+      const schedDone = activeSched.filter(s => s.done).length;
+      const todayDateStr = getTodayDateStr();
+      const todayHabitsDone = countHabitsForDate(todayDateStr);
+      const totalDailyItems = activeSched.length + 6; // 6 core non-negotiables
+      const completedDailyItems = schedDone + todayHabitsDone;
+      const dailyPct = totalDailyItems > 0 ? Math.round((completedDailyItems / totalDailyItems) * 100) : 0;
+
+      const ringEl = document.getElementById('daily-target-ring');
+      if (ringEl) {
+        ringEl.setAttribute('stroke-dashoffset', 100 - dailyPct);
+      }
+      const ringText = document.getElementById('daily-target-ring-text');
+      if (ringText) ringText.textContent = `${dailyPct}%`;
+      const ringSub = document.getElementById('daily-target-subtext');
+      if (ringSub) ringSub.textContent = `${completedDailyItems} of ${totalDailyItems} items finished`;
+
+      // 3. Streak Counter & Record
+      const streakEl = document.getElementById('streak-counter');
+      if (streakEl) streakEl.textContent = appState.streak || 0;
+      const bestStreakEl = document.getElementById('best-streak-record');
+      if (bestStreakEl) bestStreakEl.textContent = appState.bestStreak || 0;
+    }
+
+    function resetDayChecklist() {
+      if (confirm('Start a new day? This resets today\'s schedule and habit checkboxes. (Your chapter syllabus progress, test scores, and streaks will be preserved!)')) {
+        // Reset routine items
+        Object.keys(appState.schedules).forEach(mode => {
+          appState.schedules[mode].forEach(s => s.done = false);
+        });
+        // Reset today's habits
+        const todayStr = getTodayDateStr();
+        if (appState.habitLogs[todayStr]) {
+          appState.habitLogs[todayStr].habits = {};
+        }
+        saveState();
+        renderScheduleMatrix();
+        renderDailyHabits();
+        renderHabitHeatmap();
+        calculateStreakStats();
+        showToast('New day initialized! Stay disciplined.', 'success');
+      }
+    }
+
+    /* ==========================================================================
+       DATA BACKUP & RESTORE
+       ========================================================================== */
+    function exportDataBackup() {
+      try {
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(appState, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute('href', dataStr);
+        downloadAnchor.setAttribute('download', `MissionTopper_Backup_${new Date().toISOString().split('T')[0]}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        showToast('Backup JSON exported successfully!', 'success');
+      } catch (e) {
+        alert('Export failed: ' + e.message);
+      }
+    }
+
+    function triggerImportPrompt() {
+      document.getElementById('import-file-input').click();
+    }
+
+    function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (imported && (imported.chapters || imported.habitLogs || imported.schedules)) {
+            appState = {
+              ...appState,
+              ...imported
+            };
+            saveState();
+            switchPhase(appState.activePhase || 1);
+            renderScheduleMatrix();
+            renderHabitHeatmap();
+            renderDailyHabits();
+            renderDailyAudit();
+            calculateStreakStats();
+            renderTests();
+            showToast('Data restored successfully!', 'success');
+          } else {
+            alert('Invalid backup file format.');
+          }
+        } catch (err) {
+          alert('Failed to parse backup JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    /* ==========================================================================
+       BOOTSTRAP APPLICATION
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedState();
+      updateClockAndCountdowns();
+      setInterval(updateClockAndCountdowns, 1000); // Live countdown tick every second
+
+      switchPhase(appState.activePhase || 1);
+      setScheduleMode(appState.scheduleMode || 'school');
+      renderHabitHeatmap();
+      renderDailyHabits();
+      renderDailyAudit();
+      calculateStreakStats();
+      renderTests();
+      updatePomodoroDisplay();
+      updateAllMetrics();
+    });
+  </script>
+</body>
+</html>

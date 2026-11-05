@@ -1,0 +1,6 @@
+{
+  "name": "Mission Topper",
+  "description": "Mission Topper: Zero to 70/70 Turnaround - High-Discipline Study OS, Habit Tracker, and Syllabus Command Center for Class 11 PCM.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
